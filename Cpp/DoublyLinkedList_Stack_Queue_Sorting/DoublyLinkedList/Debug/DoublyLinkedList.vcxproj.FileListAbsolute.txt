@@ -1,0 +1,2 @@
+E:\Embedded\CO2003 - DSA\DoublyLinkedList_Stack_Queue_Sorting\DoublyLinkedList\Debug\DoublyLinkedList_Stack_Queue_Sorting.exe
+E:\Embedded\CO2003 - DSA\DoublyLinkedList_Stack_Queue_Sorting\DoublyLinkedList\Debug\DoublyLinkedList_Stack_Queue_Sorting.pdb

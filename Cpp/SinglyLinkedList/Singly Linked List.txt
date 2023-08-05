@@ -1,0 +1,57 @@
+// Online C++ compiler to run C++ program online
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+template <class T>
+class SLinkedList {
+public:
+    class Node; // Forward declaration
+protected:
+    Node* head;
+    Node* tail;
+    int count;
+public:
+    SLinkedList(): head(NULL), tail(NULL), count(0);
+    ~SLinkedList() { };
+    void add(T e);
+    void add(int index, T e);
+    int size();
+    bool empty();
+    T get(int index);
+    void set(int index, T e);
+    int indexOf(T item);
+    bool contains(T item);
+public:
+    class Node {
+    private:
+        T data;
+        Node* next;
+        friend class SLinkedList<T>;
+    public:
+        Node() {
+            next = 0;
+        }
+        Node(Node* next) {
+            this->next = next;
+        }   
+        Node(T data, Node* next = NULL) {
+            this->data = data;
+            this->next = next;
+        }
+    };
+};
+template <class T>
+void SLinkedList::add(T e)
+{
+    if(head == NULL || tail==NULL)
+    {
+        
+    }
+}
+int main() {
+    // Write C++ code here
+
+    return 0;
+}

@@ -1,0 +1,3 @@
+﻿  main.cpp
+E:\Embedded\CO2003 - DSA\SinglyLinkedList\Polynomial\main.cpp(393,37): error C2512: 'SLinkedList<Term>::Iterator': no appropriate default constructor available
+E:\Embedded\CO2003 - DSA\SinglyLinkedList\Polynomial\main.cpp(80,1): message : see declaration of 'SLinkedList<Term>::Iterator'

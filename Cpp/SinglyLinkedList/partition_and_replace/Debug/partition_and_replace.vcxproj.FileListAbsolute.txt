@@ -1,0 +1,2 @@
+E:\Embedded\CO2003 - DSA\SinglyLinkedList\partition_and_replace\Debug\partition_and_replace.exe
+E:\Embedded\CO2003 - DSA\SinglyLinkedList\partition_and_replace\Debug\partition_and_replace.pdb

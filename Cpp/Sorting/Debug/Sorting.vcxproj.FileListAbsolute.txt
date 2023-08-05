@@ -1,0 +1,2 @@
+E:\Embedded\CO2003 - DSA\Sorting\Debug\Sorting.exe
+E:\Embedded\CO2003 - DSA\Sorting\Debug\Sorting.pdb

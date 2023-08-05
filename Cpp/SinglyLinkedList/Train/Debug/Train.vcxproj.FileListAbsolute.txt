@@ -1,0 +1,2 @@
+E:\Embedded\CO2003 - DSA\SinglyLinkedList\Train\Debug\Train.exe
+E:\Embedded\CO2003 - DSA\SinglyLinkedList\Train\Debug\Train.pdb
