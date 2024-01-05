@@ -40,6 +40,39 @@ class imp_res : public Restaurant
 			this->total_size += 1;
 		}
 
+		void rmSeqList(string name) {
+			if (this->total_size <= 0) return;
+			this->total_size -= 1;
+			if (this->total_size == 0) {
+				customer* tmp = this->seq_head;
+				delete tmp;
+				this->seq_head = NULL;
+				this->seq_tail = NULL;
+				return;
+			}
+			if (name == this->seq_head->name) {
+				customer* tmp = this->seq_head;
+				this->seq_head = tmp->next;
+				this->seq_head->prev = NULL;
+				delete tmp;
+				return;
+			}
+			if (name == this->seq_tail->name) {
+				customer* tmp = this->seq_tail;
+				this->seq_tail = tmp->prev;
+				this->seq_tail->next = NULL;
+				delete tmp;
+				return;
+			}
+			customer* tmp = this->seq_head;
+			while (tmp->name != name) {
+				tmp = tmp->next;
+			}
+			tmp->prev->next = tmp->next;
+			tmp->next->prev = tmp->prev;
+			delete tmp;
+		}
+
 		void RED(string name, int energy)
 		{
 			// if (energy == 0) return;

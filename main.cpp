@@ -56,6 +56,10 @@ int main(int argc, char* argv[]) {
 	r->addSeqList("XYZ", -42);
 	r->addSeqList("MNP", 35);
 	r->addSeqList("IJK", 12);
+	r->rmSeqList("XYZ");
+	r->rmSeqList("ABC");
+	r->rmSeqList("IJK");
+	r->rmSeqList("MNP");
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;
