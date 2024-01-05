@@ -15,6 +15,7 @@ class imp_res : public Restaurant
 		
 		int wait_size;			// Number of customer waiting
 		customer* top_queue;	// Head for waiting queue
+		customer* bot_queue;	// Tail for waiting queue
 	public:	
 		imp_res() {
 			this->serve_size = 0;
@@ -71,6 +72,35 @@ class imp_res : public Restaurant
 			tmp->prev->next = tmp->next;
 			tmp->next->prev = tmp->prev;
 			delete tmp;
+		}
+
+		void enqueue(string name, int energy) {
+			if (this->wait_size == 0) {
+				customer *cus = new customer (name, energy, nullptr, nullptr);
+				this->top_queue = cus;
+				this->bot_queue = cus;
+			} else {
+				customer *cus = new customer (name, energy, this->bot_queue, nullptr);
+				this->bot_queue->next = cus;
+				this->bot_queue = cus;
+			}
+			this->wait_size += 1;
+		}
+
+		void dequeue() {
+			if (this->wait_size <= 1) {
+				customer *tmp = this->top_queue;
+				this->wait_size = 0;
+				delete tmp;
+				this->top_queue = NULL;
+				this->bot_queue = NULL;
+			} else {
+				customer *tmp = this->top_queue;
+				this->wait_size -= 1;
+				this->top_queue = tmp->next;
+				this->top_queue->prev = NULL;
+				delete tmp;
+			}
 		}
 
 		void RED(string name, int energy)
