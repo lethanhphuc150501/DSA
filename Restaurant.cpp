@@ -2,14 +2,61 @@
 
 class imp_res : public Restaurant
 {
+	private:
+		int serve_size; 		// Number of customer served
+		customer* cir_head;		// Head for circle list
+
+		bool status;			// Note status = 1 when last action is removing a customer
+		customer last_rm_cus;	// Use this info if status = 1
+
+		int total_size;			// Number of all customer in the restaurant
+		customer* seq_head;		// Head of sequence list
+		customer* seq_tail;		// Tail of sequence list
+		
+		int wait_size;			// Number of customer waiting
+		customer* top_queue;	// Head for waiting queue
 	public:	
-		imp_res() {};
+		imp_res() {
+			this->serve_size = 0;
+			this->cir_head = NULL;
+			this->status = 0;
+			this->total_size = 0;
+			this->seq_head = NULL;
+			this->seq_tail = NULL;
+			this->wait_size = 0;
+			this->top_queue = NULL;
+		};
+
+		void addSeqList(string name, int energy) {
+			if (this->total_size == 0) {
+				customer *cp_cus = new customer (name, energy, nullptr, nullptr);
+				this->seq_head = cp_cus;
+				this->seq_tail = cp_cus;
+			} else {
+				customer *cp_cus = new customer (name, energy, this->seq_tail, nullptr);
+				this->seq_tail->next = cp_cus;
+				this->seq_tail = cp_cus;
+			}
+			this->total_size += 1;
+		}
 
 		void RED(string name, int energy)
 		{
+			// if (energy == 0) return;
+			// if (this->serve_size == 0) {
+			// 	customer *cus = new customer (name, energy, nullptr, nullptr);
+			// 	this->serve_size = 1;
+			// 	this->cir_head = cus;
+			// 	this->wait_size = 0;
+			// 	this->top_queue = NULL;
+			// } else if (this->serve_size < MAXSIZE/2) {
+			// 	customer *cus = new customer (name, energy, nullptr, nullptr);
+				
+			// }
 			cout << name << " " << energy << endl;
-			customer *cus = new customer (name, energy, nullptr, nullptr);
 			cout << MAXSIZE << endl;
+			// this->status = 0;
+			
 		}
 		void BLUE(int num)
 		{
