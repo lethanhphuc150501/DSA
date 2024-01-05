@@ -52,6 +52,10 @@ int main(int argc, char* argv[]) {
     //	return 1;
 	//  string fileName = argv[1];
 	imp_res* r = new imp_res();
+	r->addSeqList("ABC", 12);
+	r->addSeqList("XYZ", -42);
+	r->addSeqList("MNP", 35);
+	r->addSeqList("IJK", 12);
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;
