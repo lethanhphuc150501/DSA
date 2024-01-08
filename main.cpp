@@ -52,15 +52,18 @@ int main(int argc, char* argv[]) {
     //	return 1;
 	//  string fileName = argv[1];
 	imp_res* r = new imp_res();
-	r->enqueue("ABC", 12);
-	r->enqueue("XYZ", -42);
-	r->enqueue("MNP", 35);
-	r->dequeue();
-	r->dequeue();
-	r->dequeue();
+	r->firstCustomer("longan", 62);
+	r->serveCustomer(true, "hcm", 59, "longan");
+	r->serveCustomer(true, "thanhhoa", -36, "longan");
+	r->serveCustomer(false, "hanoi", -29, "thanhhoa");
+	r->byeCustomer("hanoi");
+	r->byeCustomer("thanhhoa");
+	r->byeCustomer("longan");
+	r->serveCustomer(false, "cantho", 65, "hcm");
+	r->byeCustomer("hcm");
+	r->byeCustomer("cantho");
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;
 	return 0;
 }
-

@@ -103,6 +103,63 @@ class imp_res : public Restaurant
 			}
 		}
 
+		void firstCustomer(string name, int energy) {
+			customer *cus = new customer(name, energy, NULL, NULL);
+			cus->next = cus;
+			cus->prev = cus;
+			this->serve_size = 1;
+			this->cir_head = cus;
+			this->status = false;
+		}
+
+		void serveCustomer(bool clockwise, string name, int energy, string name_ref) {
+			customer *tmp = this->cir_head;
+			while (tmp->name != name_ref) {		// unsafe, add variable to count number of loops later
+				tmp = tmp->next;
+			}
+			if (clockwise == true) {
+				customer *cus = new customer(name, energy, tmp, tmp->next);
+				tmp->next->prev = cus;
+				tmp->next = cus;
+				this->cir_head = cus;
+			} else {
+				customer *cus = new customer(name, energy, tmp->prev, tmp);
+				tmp->prev->next = cus;
+				tmp->prev = cus;
+				this->cir_head = cus;
+			}
+			this->serve_size += 1;
+			this->status = false;
+		}
+
+		void byeCustomer(string name) {
+			if (this->serve_size <= 1) {
+				customer *tmp = this->cir_head;
+				this->cir_head = NULL;
+				this->serve_size = 0;
+				delete tmp;
+				this->status = false;
+				return;
+			}
+			customer *rm_it = this->cir_head;
+			while (rm_it->name != name) {		// unsafe, add variable to count number of loops later
+				rm_it = rm_it->next;
+			}
+			if (rm_it == this->cir_head) {
+				this->cir_head = this->cir_head->next;
+			}
+			customer *tmp = rm_it->next;
+			rm_it->prev->next = tmp;
+			tmp->prev = rm_it->prev;
+			this->status = true;
+			this->last_rm_cus.energy = rm_it->energy;
+			this->last_rm_cus.name = rm_it->name;
+			this->last_rm_cus.next = rm_it->next;
+			this->last_rm_cus.prev = rm_it->prev;
+			delete rm_it;
+			this->serve_size -= 1;
+		}
+
 		void RED(string name, int energy)
 		{
 			// if (energy == 0) return;
