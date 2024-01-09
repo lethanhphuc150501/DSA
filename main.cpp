@@ -53,25 +53,21 @@ int main(int argc, char* argv[]) {
 	//  string fileName = argv[1];
 	imp_res* r = new imp_res();
 	MAXSIZE = 6;
-	r->RED("mcill", 100);	// 1. init
-	r->RED("sec", -79);	// second customer
-	r->RED("keen", 0);	// 2. invalid energy
-	r->RED("right", 100);	// 3. check add right
-	r->rmSeqList("right");	// 4. remove to detect new position X
-	r->byeCustomer("right");
-	r->RED("left", -25);	// 5. check add right
-	r->RED("half", -100);	// 6. check >= MAXSIZE/2
-	r->RED("same", 5);	// 7. check same RES
-	r->RED("heal", 200);	// add customer
-	r->RED("dupe", -45);	// 8. full table, move to queue
-	r->RED("full", 12);	// add queue
-	r->RED("right", 100);	// add queue
-	r->RED("keen", 65);	// add queue
-	r->RED("same", 23);	// 9. invalid: duplicate name
-	r->RED("dina", -8);	// add queue
-	r->RED("dino", -8);	// add queue
-	r->RED("nana", -8);	// 10. full queue
-	r->RED("flqu", 404);	// full queue
+	r->RED("half", -100);
+	r->RED("same", 5);
+	r->RED("heal", 200);
+	r->RED("dupe", -45);
+	r->RED("full", 12);
+	r->RED("right", 100);
+	r->RED("keen", 65);
+	r->RED("diff", 23);
+	r->RED("dina", -8);
+	r->RED("dino", -8);
+	r->RED("nana", -8);
+	r->RED("flqu", 404);
+	r->BLUE(8);		// 1. NUM >= MAXSIZE, update queue
+	r->BLUE(3);		// 2. NUM < serve_size
+	r->BLUE(4);		// 3. NUM > serve_size
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;

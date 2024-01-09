@@ -166,14 +166,19 @@ class imp_res : public Restaurant
 
 		void RED(string name, int energy) {
 			if (energy == 0) return;
-			if (this->wait_size >= MAXSIZE) return;	// full slot
+			if (this->serve_size >= MAXSIZE && this->wait_size >= MAXSIZE) return;	// full slot
 
-			customer *check_duplicate = this->seq_head;
-			while (check_duplicate != NULL) {
-				if (check_duplicate->name == name) return;	// Check duplicate customer name
-				check_duplicate = check_duplicate->next;
+			bool wait_to_serve = false;
+			if (this->serve_size < MAXSIZE && this->wait_size > 0) {
+				wait_to_serve = true;
+			} else {
+				customer *check_duplicate = this->seq_head;
+				while (check_duplicate != NULL) {
+					if (check_duplicate->name == name) return;	// Check duplicate customer name
+					check_duplicate = check_duplicate->next;
+				}
 			}
-
+			
 			if (this->serve_size >= MAXSIZE) {
 				this->enqueue(name, energy);
 				this->addSeqList(name, energy);
@@ -205,12 +210,30 @@ class imp_res : public Restaurant
 				if (res < 0) this->serveCustomer(false, name, energy, ref->name);
 				else this->serveCustomer(true, name, energy, ref->name);
 			}
-			this->addSeqList(name, energy);
+			if (!wait_to_serve) {
+				this->addSeqList(name, energy);
+			}
 			cout << name << " " << energy << endl;
 			cout << MAXSIZE << endl;			
 		}
-		void BLUE(int num)
-		{
+		void BLUE(int num) {
+			if (num >= this->serve_size) {
+				while (this->serve_size > 0) {
+					string rm_name = this->cir_head->name;
+					this->byeCustomer(rm_name);
+					this->rmSeqList(rm_name);
+				}
+			} else {
+				for (int i = 0; i < num; i++) {
+					string rm_name = this->seq_head->name;
+					this->byeCustomer(rm_name);
+					this->rmSeqList(rm_name);
+				}
+			}
+			while (this->serve_size < MAXSIZE && this->wait_size > 0) {
+				this->RED(this->top_queue->name, this->top_queue->energy);
+				this->dequeue();
+			}
 			cout << "blue "<< num << endl;
 		}
 		void PURPLE()
