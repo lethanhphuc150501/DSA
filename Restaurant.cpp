@@ -1,5 +1,9 @@
 #include "main.h"
 
+int abs(int num) {
+	if (num > 0) return num;
+	else return -num;
+}
 class imp_res : public Restaurant
 {
 	private:
@@ -160,23 +164,50 @@ class imp_res : public Restaurant
 			this->serve_size -= 1;
 		}
 
-		void RED(string name, int energy)
-		{
-			// if (energy == 0) return;
-			// if (this->serve_size == 0) {
-			// 	customer *cus = new customer (name, energy, nullptr, nullptr);
-			// 	this->serve_size = 1;
-			// 	this->cir_head = cus;
-			// 	this->wait_size = 0;
-			// 	this->top_queue = NULL;
-			// } else if (this->serve_size < MAXSIZE/2) {
-			// 	customer *cus = new customer (name, energy, nullptr, nullptr);
-				
-			// }
-			cout << name << " " << energy << endl;
-			cout << MAXSIZE << endl;
-			// this->status = 0;
+		void RED(string name, int energy) {
+			if (energy == 0) return;
+			if (this->wait_size >= MAXSIZE) return;	// full slot
+
+			customer *check_duplicate = this->seq_head;
+			while (check_duplicate != NULL) {
+				if (check_duplicate->name == name) return;	// Check duplicate customer name
+				check_duplicate = check_duplicate->next;
+			}
+
+			if (this->serve_size >= MAXSIZE) {
+				this->enqueue(name, energy);
+				this->addSeqList(name, energy);
+				return;
+			}
 			
+			if (this->serve_size == 0) {
+				this->firstCustomer(name, energy);
+			} else if (this->serve_size < MAXSIZE/2) {
+				if (this->status == false) {
+					if (energy >= this->cir_head->energy)
+						this->serveCustomer(true, name, energy, this->cir_head->name);
+					else
+						this->serveCustomer(false, name, energy, this->cir_head->name);
+				} else {
+					this->serveCustomer(false, name, energy, this->last_rm_cus.next->name);
+				}
+			} else {
+				customer *ref = this->status ? this->last_rm_cus.next : this->cir_head;
+				customer *tmp = ref;
+				int res = abs(energy) - abs(tmp->energy);
+				for (int i = 0; i < this->serve_size; i++) {
+					if (abs(res) < abs(abs(energy) - abs(tmp->energy))) {
+						res = abs(energy) - abs(tmp->energy);
+						ref = tmp;
+					}
+					tmp = tmp->next;
+				}
+				if (res < 0) this->serveCustomer(false, name, energy, ref->name);
+				else this->serveCustomer(true, name, energy, ref->name);
+			}
+			this->addSeqList(name, energy);
+			cout << name << " " << energy << endl;
+			cout << MAXSIZE << endl;			
 		}
 		void BLUE(int num)
 		{
