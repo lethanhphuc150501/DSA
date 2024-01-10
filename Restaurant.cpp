@@ -4,6 +4,14 @@ int abs(int num) {
 	if (num > 0) return num;
 	else return -num;
 }
+
+int first_incremental_value(int n) {
+	int k = 1;
+	while (k < n/3) {
+		k = 3 * k + 1;
+	}
+	return k;
+}
 class imp_res : public Restaurant
 {
 	private:
@@ -164,6 +172,40 @@ class imp_res : public Restaurant
 			this->serve_size -= 1;
 		}
 
+		void SortSegment(int k, int segment) {
+			customer *neo = this->top_queue;
+			for (int i = 0; i < segment && neo != NULL; i++) neo = neo->next;
+			if (neo == NULL) return;
+			while (neo != NULL) {
+				int neo_energy = neo->energy;
+				string neo_name = neo->name;
+				customer *tmp = neo;
+				customer *walker = tmp;
+				for (int i = 0; i < k && walker != NULL; i++) walker = walker->prev;
+				while (walker != NULL && abs(neo_energy) > abs(walker->energy)) {	// Insection Sort
+					tmp->energy = walker->energy;
+					tmp->name = walker->name;
+					tmp = walker;
+					for (int i = 0; i < k && walker != NULL; i++) walker = walker->prev;
+				}
+				tmp->energy = neo_energy;
+				tmp->name = neo_name;
+				for (int i = 0; i < k && neo != NULL; i++) neo = neo->next;
+			}			
+		}
+		
+		void ShellSort() {
+			int k = first_incremental_value(this->wait_size);
+			while (k >= 1) {
+				int segment = 0;
+				while (segment < k) {
+					this->SortSegment(k, segment);
+					segment++;
+				}
+				k = k/3;
+			}
+		}
+		
 		void RED(string name, int energy) {
 			if (energy == 0) return;
 			if (this->serve_size >= MAXSIZE && this->wait_size >= MAXSIZE) return;	// full slot

@@ -52,22 +52,19 @@ int main(int argc, char* argv[]) {
     //	return 1;
 	//  string fileName = argv[1];
 	imp_res* r = new imp_res();
-	MAXSIZE = 6;
-	r->RED("half", -100);
-	r->RED("same", 5);
-	r->RED("heal", 200);
-	r->RED("dupe", -45);
-	r->RED("full", 12);
-	r->RED("right", 100);
-	r->RED("keen", 65);
-	r->RED("diff", 23);
-	r->RED("dina", -8);
-	r->RED("dino", -8);
-	r->RED("nana", -8);
-	r->RED("flqu", 404);
-	r->BLUE(8);		// 1. NUM >= MAXSIZE, update queue
-	r->BLUE(3);		// 2. NUM < serve_size
-	r->BLUE(4);		// 3. NUM > serve_size
+	r->enqueue("half", -100);
+	r->enqueue("same", 5);
+	r->enqueue("heal", 200);
+	r->enqueue("dupe", -45);
+	r->enqueue("full", 12);
+	r->enqueue("right", 100);
+	r->enqueue("keen", 65);
+	r->enqueue("diff", 23);
+	r->enqueue("dina", -8);
+	r->enqueue("dino", -8);
+	r->enqueue("nana", -8);
+	r->enqueue("flqu", 404);
+	r->ShellSort();
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;
