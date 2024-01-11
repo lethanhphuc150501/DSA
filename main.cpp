@@ -64,12 +64,8 @@ int main(int argc, char* argv[]) {
 	r->enqueue("dino", -8);
 	r->enqueue("nana", -8);
 	r->enqueue("flqu", 404);
-	imp_res::customer *tmp = r->top_queue;
-	int brk_val = 6;
-	for (int i = 0; i < brk_val; i++) {
-		tmp = tmp->next;
-	}
-	r->ShellSort(tmp);
+	int swp_tm = r->ShellSort(r->bot_queue);
+	cout << "Swap times: " << swp_tm << endl;
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;

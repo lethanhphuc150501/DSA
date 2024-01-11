@@ -172,10 +172,11 @@ class imp_res : public Restaurant
 			this->serve_size -= 1;
 		}
 
-		void SortSegment(int k, int segment, customer *nxt_cus) {
+		int SortSegment(int k, int segment, customer *nxt_cus) {
+			int swap_time = 0;
 			customer *neo = this->top_queue;
 			for (int i = 0; i < segment && neo != nxt_cus; i++) neo = neo->next;
-			if (neo == nxt_cus) return;
+			if (neo == nxt_cus) return 0;
 			while (neo != nxt_cus) {
 				int neo_energy = neo->energy;
 				string neo_name = neo->name;
@@ -186,24 +187,28 @@ class imp_res : public Restaurant
 					tmp->energy = walker->energy;
 					tmp->name = walker->name;
 					tmp = walker;
+					swap_time++;
 					for (int i = 0; i < k && walker != NULL; i++) walker = walker->prev;
 				}
 				tmp->energy = neo_energy;
 				tmp->name = neo_name;
 				for (int i = 0; i < k && neo != nxt_cus; i++) neo = neo->next;
-			}			
+			}
+			return swap_time;	
 		}
 		
-		void ShellSort(customer *brk_cus) {
+		int ShellSort(customer *brk_cus) {
 			int k = first_incremental_value(this->wait_size);
+			int swap_ovt = 0;
 			while (k >= 1) {
 				int segment = 0;
 				while (segment < k) {
-					this->SortSegment(k, segment, brk_cus->next);
+					swap_ovt += this->SortSegment(k, segment, brk_cus->next);
 					segment++;
 				}
 				k = k/3;
 			}
+			return swap_ovt;
 		}
 		
 		void RED(string name, int energy) {
