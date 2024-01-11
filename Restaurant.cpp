@@ -14,7 +14,7 @@ int first_incremental_value(int n) {
 }
 class imp_res : public Restaurant
 {
-	private:
+	public:
 		int serve_size; 		// Number of customer served
 		customer* cir_head;		// Head for circle list
 
@@ -172,11 +172,11 @@ class imp_res : public Restaurant
 			this->serve_size -= 1;
 		}
 
-		void SortSegment(int k, int segment) {
+		void SortSegment(int k, int segment, customer *nxt_cus) {
 			customer *neo = this->top_queue;
-			for (int i = 0; i < segment && neo != NULL; i++) neo = neo->next;
-			if (neo == NULL) return;
-			while (neo != NULL) {
+			for (int i = 0; i < segment && neo != nxt_cus; i++) neo = neo->next;
+			if (neo == nxt_cus) return;
+			while (neo != nxt_cus) {
 				int neo_energy = neo->energy;
 				string neo_name = neo->name;
 				customer *tmp = neo;
@@ -190,16 +190,16 @@ class imp_res : public Restaurant
 				}
 				tmp->energy = neo_energy;
 				tmp->name = neo_name;
-				for (int i = 0; i < k && neo != NULL; i++) neo = neo->next;
+				for (int i = 0; i < k && neo != nxt_cus; i++) neo = neo->next;
 			}			
 		}
 		
-		void ShellSort() {
+		void ShellSort(customer *brk_cus) {
 			int k = first_incremental_value(this->wait_size);
 			while (k >= 1) {
 				int segment = 0;
 				while (segment < k) {
-					this->SortSegment(k, segment);
+					this->SortSegment(k, segment, brk_cus->next);
 					segment++;
 				}
 				k = k/3;

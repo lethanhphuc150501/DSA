@@ -64,7 +64,12 @@ int main(int argc, char* argv[]) {
 	r->enqueue("dino", -8);
 	r->enqueue("nana", -8);
 	r->enqueue("flqu", 404);
-	r->ShellSort();
+	imp_res::customer *tmp = r->top_queue;
+	int brk_val = 6;
+	for (int i = 0; i < brk_val; i++) {
+		tmp = tmp->next;
+	}
+	r->ShellSort(tmp);
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;
