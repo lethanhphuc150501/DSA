@@ -14,7 +14,7 @@ int first_incremental_value(int n) {
 }
 class imp_res : public Restaurant
 {
-	public:
+	private:
 		int serve_size; 		// Number of customer served
 		customer* cir_head;		// Head for circle list
 
@@ -283,8 +283,49 @@ class imp_res : public Restaurant
 			}
 			cout << "blue "<< num << endl;
 		}
-		void PURPLE()
-		{
+		void PURPLE() {
+			customer *highest = this->top_queue;
+			customer *tmp = this->top_queue;
+			while (tmp != NULL) {
+				if (abs(highest->energy) < abs(tmp->energy)) highest = tmp;
+				tmp = tmp->next;
+			}
+			int swap_total = this->ShellSort(highest);
+			tmp = this->top_queue;
+			int s_energy = 0;
+			customer *seq_tmp = this->seq_head;
+			while (tmp != highest) {
+				if (abs(tmp->energy) == abs(tmp->next->energy)) {
+					s_energy = abs(tmp->energy);
+					seq_tmp = this->seq_head;
+find_in_seqlist:
+					while (seq_tmp != NULL && abs(seq_tmp->energy) != s_energy) {
+						seq_tmp = seq_tmp->next;
+					}
+					if (seq_tmp == NULL) {
+						cout << "Error: Invalid customer in waiting queue\n";
+						return;
+					}
+					tmp->energy = seq_tmp->energy;
+					tmp->name = seq_tmp->name;
+					if (tmp->next != highest && abs(tmp->next->energy) == s_energy) {
+						tmp = tmp->next;
+						seq_tmp = seq_tmp->next;
+						goto find_in_seqlist; 
+					}
+				}
+				tmp = tmp->next;
+			}
+			if (abs(tmp->energy) == s_energy) {
+				do {
+					seq_tmp = seq_tmp->next;
+				} while (seq_tmp != NULL && abs(seq_tmp->energy) != s_energy);
+				if (seq_tmp != NULL) {
+					tmp->energy = seq_tmp->energy;
+					tmp->name = seq_tmp->name;
+				}
+			}
+			BLUE(swap_total % MAXSIZE);
 			cout << "purple"<< endl;
 		}
 		void REVERSAL()
