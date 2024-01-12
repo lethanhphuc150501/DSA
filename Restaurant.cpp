@@ -328,8 +328,52 @@ find_in_seqlist:
 			BLUE(swap_total % MAXSIZE);
 			cout << "purple"<< endl;
 		}
-		void REVERSAL()
-		{
+		void REVERSAL() {
+			if (this->serve_size == 0) return;
+			customer *positive_prev = this->status ? this->last_rm_cus.prev : this->cir_head;
+			customer *positive_next = this->status ? this->last_rm_cus.next : this->cir_head->next;
+			customer *negative_prev = this->status ? this->last_rm_cus.prev : this->cir_head;
+			customer *negative_next = this->status ? this->last_rm_cus.next : this->cir_head->next;
+			
+			/*------Reverse positive values------*/
+			while (positive_prev->energy < 0) positive_prev = positive_prev->prev;
+			while (positive_next->energy < 0) positive_next = positive_next->next;
+			while (positive_prev != positive_next) {
+				int swap_energy = positive_prev->energy;
+				string swap_name = positive_prev->name;
+				positive_prev->energy = positive_next->energy;
+				positive_prev->name = positive_next->name;
+				positive_next->energy = swap_energy;
+				positive_next->name = swap_name;
+
+				do {
+					positive_prev = positive_prev->prev;
+				} while (positive_prev->energy < 0);
+				if (positive_prev == positive_next) break;
+				do {
+					positive_next = positive_next->next;
+				} while (positive_next->energy < 0);
+			}
+			
+			/*------Reverse negative values------*/
+			while (negative_prev->energy > 0) negative_prev = negative_prev->prev;
+			while (negative_next->energy > 0) negative_next = negative_next->next;
+			while (negative_prev != negative_next) {
+				int swap_energy = negative_prev->energy;
+				string swap_name = negative_prev->name;
+				negative_prev->energy = negative_next->energy;
+				negative_prev->name = negative_next->name;
+				negative_next->energy = swap_energy;
+				negative_next->name = swap_name;
+
+				do {
+					negative_prev = negative_prev->prev;
+				} while (negative_prev->energy > 0);
+				if (negative_prev == negative_next) break;
+				do {
+					negative_next = negative_next->next;
+				} while (negative_next->energy > 0);
+			}
 			cout << "reversal" << endl;
 		}
 		void UNLIMITED_VOID()

@@ -63,23 +63,11 @@ int main(int argc, char* argv[]) {
 	r->RED("epsilon", 45);
 	r->RED("full", 12);
 	r->RED("right", 100);
-	r->RED("oop", 712);
+	r->RED("oop", -72);
 	r->RED("java", -980);
-
-	r->RED("keen", 10);
-	r->RED("diff", -10);
-	r->RED("ADT", 75);
-	r->RED("dino", 88);
-	r->RED("nana", -88);
-	r->RED("flqu", 10);
-	r->RED("dina", 88);
-	r->RED("electron", 88);
-	r->RED("OTT", -10);
-	r->RED("chems", 404);
-	r->RED("neutron", -88);
-	r->RED("proton", 10);
-	
-	r->PURPLE();
+	r->REVERSAL();
+	r->BLUE(8);
+	r->REVERSAL();
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;
