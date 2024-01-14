@@ -51,9 +51,11 @@ int main(int argc, char* argv[]) {
 	//if (argc < 2)
     //	return 1;
 	//  string fileName = argv[1];
+	mem_leak = 0;
 	imp_res* r = new imp_res();
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;
+	cout << "Check memory leak: " << mem_leak << endl;
 	return 0;
 }

@@ -28,25 +28,14 @@ class imp_res : public Restaurant
 		int wait_size;			// Number of customer waiting
 		customer* top_queue;	// Head for waiting queue
 		customer* bot_queue;	// Tail for waiting queue
-	public:	
-		imp_res() {
-			this->serve_size = 0;
-			this->cir_head = NULL;
-			this->status = 0;
-			this->total_size = 0;
-			this->seq_head = NULL;
-			this->seq_tail = NULL;
-			this->wait_size = 0;
-			this->top_queue = NULL;
-		};
 
 		void addSeqList(string name, int energy) {
 			if (this->total_size == 0) {
-				customer *cp_cus = new customer (name, energy, nullptr, nullptr);
+				customer *cp_cus = new customer (name, energy, nullptr, nullptr); mem_leak++;
 				this->seq_head = cp_cus;
 				this->seq_tail = cp_cus;
 			} else {
-				customer *cp_cus = new customer (name, energy, this->seq_tail, nullptr);
+				customer *cp_cus = new customer (name, energy, this->seq_tail, nullptr); mem_leak++;
 				this->seq_tail->next = cp_cus;
 				this->seq_tail = cp_cus;
 			}
@@ -58,7 +47,7 @@ class imp_res : public Restaurant
 			this->total_size -= 1;
 			if (this->total_size == 0) {
 				customer* tmp = this->seq_head;
-				delete tmp;
+				delete tmp; mem_leak--;
 				this->seq_head = NULL;
 				this->seq_tail = NULL;
 				return;
@@ -67,14 +56,14 @@ class imp_res : public Restaurant
 				customer* tmp = this->seq_head;
 				this->seq_head = tmp->next;
 				this->seq_head->prev = NULL;
-				delete tmp;
+				delete tmp; mem_leak--;
 				return;
 			}
 			if (name == this->seq_tail->name) {
 				customer* tmp = this->seq_tail;
 				this->seq_tail = tmp->prev;
 				this->seq_tail->next = NULL;
-				delete tmp;
+				delete tmp; mem_leak--;
 				return;
 			}
 			customer* tmp = this->seq_head;
@@ -83,16 +72,16 @@ class imp_res : public Restaurant
 			}
 			tmp->prev->next = tmp->next;
 			tmp->next->prev = tmp->prev;
-			delete tmp;
+			delete tmp; mem_leak--;
 		}
 
 		void enqueue(string name, int energy) {
 			if (this->wait_size == 0) {
-				customer *cus = new customer (name, energy, nullptr, nullptr);
+				customer *cus = new customer (name, energy, nullptr, nullptr); mem_leak++;
 				this->top_queue = cus;
 				this->bot_queue = cus;
 			} else {
-				customer *cus = new customer (name, energy, this->bot_queue, nullptr);
+				customer *cus = new customer (name, energy, this->bot_queue, nullptr); mem_leak++;
 				this->bot_queue->next = cus;
 				this->bot_queue = cus;
 			}
@@ -103,7 +92,7 @@ class imp_res : public Restaurant
 			if (this->wait_size <= 1) {
 				customer *tmp = this->top_queue;
 				this->wait_size = 0;
-				delete tmp;
+				delete tmp; mem_leak--;
 				this->top_queue = NULL;
 				this->bot_queue = NULL;
 			} else {
@@ -111,7 +100,7 @@ class imp_res : public Restaurant
 				this->wait_size -= 1;
 				this->top_queue = tmp->next;
 				this->top_queue->prev = NULL;
-				delete tmp;
+				delete tmp; mem_leak--;
 			}
 		}
 
@@ -125,7 +114,7 @@ class imp_res : public Restaurant
 				customer* tmp = this->bot_queue;
 				this->bot_queue = tmp->prev;
 				this->bot_queue->next = NULL;
-				delete tmp;
+				delete tmp; mem_leak--;
 				this->wait_size -= 1;
 				return;
 			}
@@ -136,12 +125,12 @@ class imp_res : public Restaurant
 			}
 			tmp->prev->next = tmp->next;
 			tmp->next->prev = tmp->prev;
-			delete tmp;
+			delete tmp; mem_leak--;
 			this->wait_size -= 1;
 		}
 
 		void firstCustomer(string name, int energy) {
-			customer *cus = new customer(name, energy, NULL, NULL);
+			customer *cus = new customer(name, energy, NULL, NULL); mem_leak++;
 			cus->next = cus;
 			cus->prev = cus;
 			this->serve_size = 1;
@@ -155,12 +144,12 @@ class imp_res : public Restaurant
 				tmp = tmp->next;
 			}
 			if (clockwise == true) {
-				customer *cus = new customer(name, energy, tmp, tmp->next);
+				customer *cus = new customer(name, energy, tmp, tmp->next); mem_leak++;
 				tmp->next->prev = cus;
 				tmp->next = cus;
 				this->cir_head = cus;
 			} else {
-				customer *cus = new customer(name, energy, tmp->prev, tmp);
+				customer *cus = new customer(name, energy, tmp->prev, tmp); mem_leak++;
 				tmp->prev->next = cus;
 				tmp->prev = cus;
 				this->cir_head = cus;
@@ -174,7 +163,7 @@ class imp_res : public Restaurant
 				customer *tmp = this->cir_head;
 				this->cir_head = NULL;
 				this->serve_size = 0;
-				delete tmp;
+				delete tmp; mem_leak--;
 				this->status = false;
 				return;
 			}
@@ -196,7 +185,7 @@ class imp_res : public Restaurant
 			this->last_rm_cus.name = rm_it->name;
 			this->last_rm_cus.next = rm_it->next;
 			this->last_rm_cus.prev = rm_it->prev;
-			delete rm_it;
+			delete rm_it; mem_leak--;
 			this->serve_size -= 1;
 		}
 
@@ -245,6 +234,18 @@ class imp_res : public Restaurant
 			}
 			return swap_ovt;
 		}
+		
+	public:	
+		imp_res() {
+			this->serve_size = 0;
+			this->cir_head = NULL;
+			this->status = 0;
+			this->total_size = 0;
+			this->seq_head = NULL;
+			this->seq_tail = NULL;
+			this->wait_size = 0;
+			this->top_queue = NULL;
+		};
 		
 		void RED(string name, int energy) {
 			if (energy == 0) return;
@@ -491,5 +492,10 @@ class imp_res : public Restaurant
 				}
 			}
 			cout << "light " << num << endl;
+		}
+
+		~imp_res() {
+			this->BLUE(MAXSIZE);
+			this->BLUE(MAXSIZE);
 		}
 };

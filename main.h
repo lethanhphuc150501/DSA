@@ -5,6 +5,7 @@
 #include <math.h>
 
 int MAXSIZE;
+int mem_leak;
 
 using namespace std;
 
