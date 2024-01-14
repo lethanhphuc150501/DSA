@@ -461,8 +461,32 @@ class imp_res : public Restaurant
 			}
 			cout << "domain_expansion" << endl;
 		}
-		void LIGHT(int num)
-		{
+		void LIGHT(int num) {
+			if (num > 0) {
+				customer *tmp = this->status ? this->last_rm_cus.next : this->cir_head;
+				int loop = 1;
+				while (loop <= this->serve_size && tmp != NULL) {
+					tmp->print();
+					tmp = tmp->next;
+					loop++;
+				}
+			}
+			if (num < 0) {
+				customer *tmp = this->status ? this->last_rm_cus.prev : this->cir_head;
+				int loop = 1;
+				while (loop <= this->serve_size && tmp != NULL) {
+					tmp->print();
+					tmp = tmp->prev;
+					loop++;
+				}
+			}
+			if (num == 0) {
+				customer *tmp = this->top_queue;
+				while (tmp != NULL) {
+					tmp->print();
+					tmp = tmp->next;
+				}
+			}
 			cout << "light " << num << endl;
 		}
 };

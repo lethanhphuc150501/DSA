@@ -65,10 +65,9 @@ int main(int argc, char* argv[]) {
 	r->RED("dino", -8);
 	r->RED("nana", -8);
 	r->RED("flqu", 404);
-	// r->BLUE(8);		// 1. NUM >= MAXSIZE, update queue
-	// r->BLUE(3);		// 2. NUM < serve_size
-	// r->BLUE(4);		// 3. NUM > serve_size
-	r->DOMAIN_EXPANSION();
+	r->LIGHT(20);
+	r->LIGHT(-74);
+	r->LIGHT(0);
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;
