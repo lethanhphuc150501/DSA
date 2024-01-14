@@ -319,6 +319,7 @@ class imp_res : public Restaurant
 			cout << "blue "<< num << endl;
 		}
 		void PURPLE() {
+			if (this->wait_size <= 0) return;
 			customer *highest = this->top_queue;
 			customer *tmp = this->top_queue;
 			while (tmp != NULL) {
@@ -420,6 +421,7 @@ class imp_res : public Restaurant
 			}
 		}
 		void DOMAIN_EXPANSION() {
+			if (this->total_size <= 0) return;
 			int sum = 0;
 			customer *tmp = this->seq_head;
 			do {
@@ -462,6 +464,7 @@ class imp_res : public Restaurant
 			cout << "domain_expansion" << endl;
 		}
 		void LIGHT(int num) {
+			if (this->serve_size <= 0) return;
 			if (num > 0) {
 				customer *tmp = this->status ? this->last_rm_cus.next : this->cir_head;
 				int loop = 1;
