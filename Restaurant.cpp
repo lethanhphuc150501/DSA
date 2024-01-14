@@ -349,9 +349,47 @@ class imp_res : public Restaurant
 			}
 			cout << "reversal" << endl;
 		}
-		void UNLIMITED_VOID()
-		{
-			cout << "unlimited_void" << endl;
+		void UNLIMITED_VOID() {
+			if (this->serve_size < 4) return;
+			customer *start = this->status ? this->last_rm_cus.next : this->cir_head;
+			customer *end = start;
+			int sub_total = start->energy;
+			for (int i = 0; i < 3; i++) {
+				end = end->next;
+				sub_total += end->energy;
+			}
+			customer *start_tmp = start;
+			customer *end_tmp = end;
+			customer *start_rec = start;
+			customer *end_rec = end;
+			int tmp_total = sub_total;
+			int smallest = tmp_total;
+			int step_size = 4;
+			while (end != start) {
+				if (step_size > 4) {
+					sub_total += end->energy;
+				}
+				tmp_total = sub_total;
+				start_tmp = start;
+				end_tmp = end;
+				while (end_tmp->next != start) {
+					tmp_total = tmp_total - start_tmp->energy + end_tmp->next->energy;
+					start_tmp = start_tmp->next;
+					end_tmp = end_tmp->next;
+					if (tmp_total <= smallest) {
+						smallest = tmp_total;
+						start_rec = start_tmp;
+						end_rec = end_tmp;
+					}
+				}
+				end = end->next;
+				step_size++;
+			}
+			customer *p = start_rec;
+			while (p != end_rec->next) {
+				p->print();
+				p = p->next;
+			}
 		}
 		void DOMAIN_EXPANSION()
 		{
