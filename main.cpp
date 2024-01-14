@@ -52,19 +52,23 @@ int main(int argc, char* argv[]) {
     //	return 1;
 	//  string fileName = argv[1];
 	imp_res* r = new imp_res();
-	MAXSIZE = 12;
-	r->firstCustomer("half", 5);
-	r->serveCustomer(true, "dump", -1, "half");
-	r->serveCustomer(true, "fell", -1, "half");
-	r->UNLIMITED_VOID();
-	r->serveCustomer(true, "mango", -1, "half");
-	r->serveCustomer(true, "ovs", -1, "half");
-	r->serveCustomer(false, "dmp", -1, "half");
-	r->serveCustomer(false, "fll", -1, "half");
-	r->serveCustomer(false, "mngo", -1, "half");
-	r->serveCustomer(false, "vs", -1, "half");
-	r->serveCustomer(true, "new", 6, "dump");
-	r->UNLIMITED_VOID();
+	MAXSIZE = 6;
+	r->RED("half", -100);
+	r->RED("same", 5);
+	r->RED("heal", 200);
+	r->RED("dupe", -45);
+	r->RED("full", 12);
+	r->RED("right", 100);
+	r->RED("keen", 65);
+	r->RED("diff", 23);
+	r->RED("dina", -8);
+	r->RED("dino", -8);
+	r->RED("nana", -8);
+	r->RED("flqu", 404);
+	// r->BLUE(8);		// 1. NUM >= MAXSIZE, update queue
+	// r->BLUE(3);		// 2. NUM < serve_size
+	// r->BLUE(4);		// 3. NUM > serve_size
+	r->DOMAIN_EXPANSION();
 	string fileName = "test.txt";
     simulate(fileName, r);
   	delete r;

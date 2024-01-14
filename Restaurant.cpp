@@ -115,6 +115,31 @@ class imp_res : public Restaurant
 			}
 		}
 
+		void rmQueue(string name) {
+			if (this->wait_size <= 0) return;
+			if (name == this->top_queue->name) {
+				this->dequeue();
+				return;
+			}
+			if (name == this->bot_queue->name) {
+				customer* tmp = this->bot_queue;
+				this->bot_queue = tmp->prev;
+				this->bot_queue->next = NULL;
+				delete tmp;
+				this->wait_size -= 1;
+				return;
+			}
+			customer* tmp = this->top_queue;
+			while (tmp->name != name) {
+				tmp = tmp->next;
+				if (tmp == NULL) return;
+			}
+			tmp->prev->next = tmp->next;
+			tmp->next->prev = tmp->prev;
+			delete tmp;
+			this->wait_size -= 1;
+		}
+
 		void firstCustomer(string name, int energy) {
 			customer *cus = new customer(name, energy, NULL, NULL);
 			cus->next = cus;
@@ -145,7 +170,7 @@ class imp_res : public Restaurant
 		}
 
 		void byeCustomer(string name) {
-			if (this->serve_size <= 1) {
+			if (this->serve_size <= 1 && this->cir_head->name == name) {
 				customer *tmp = this->cir_head;
 				this->cir_head = NULL;
 				this->serve_size = 0;
@@ -154,7 +179,10 @@ class imp_res : public Restaurant
 				return;
 			}
 			customer *rm_it = this->cir_head;
-			while (rm_it->name != name) {		// unsafe, add variable to count number of loops later
+			int loop = 1;
+			while (rm_it->name != name) {
+				loop++;
+				if (loop > this->serve_size) return;
 				rm_it = rm_it->next;
 			}
 			if (rm_it == this->cir_head) {
@@ -391,8 +419,46 @@ class imp_res : public Restaurant
 				p = p->next;
 			}
 		}
-		void DOMAIN_EXPANSION()
-		{
+		void DOMAIN_EXPANSION() {
+			int sum = 0;
+			customer *tmp = this->seq_head;
+			do {
+				sum += tmp->energy;
+				tmp = tmp->next;
+			} while (tmp != NULL);
+			tmp = this->seq_tail;
+			string rm_name;
+			if (sum >= 0) {
+				do {
+					if (tmp->energy < 0) {
+						rm_name = tmp->name;
+						tmp->print();
+						tmp = tmp->prev;
+						rmSeqList(rm_name);
+						byeCustomer(rm_name);
+						rmQueue(rm_name);
+					} else {
+						tmp = tmp->prev;
+					}
+				} while (tmp != NULL);
+			} else {
+				do {
+					if (tmp->energy > 0) {
+						rm_name = tmp->name;
+						tmp->print();
+						tmp = tmp->prev;
+						rmSeqList(rm_name);
+						byeCustomer(rm_name);
+						rmQueue(rm_name);
+					} else {
+						tmp = tmp->prev;
+					}
+				} while (tmp != NULL);
+			}
+			while (this->serve_size < MAXSIZE && this->wait_size > 0) {
+				this->RED(this->top_queue->name, this->top_queue->energy);
+				this->dequeue();
+			}
 			cout << "domain_expansion" << endl;
 		}
 		void LIGHT(int num)
