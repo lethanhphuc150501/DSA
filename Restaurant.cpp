@@ -16,10 +16,7 @@ class imp_res : public Restaurant
 {
 	private:
 		int serve_size; 		// Number of customer served
-		customer* cir_head;		// Head for circle list
-
-		bool status;			// Note status = 1 when last action is removing a customer
-		customer last_rm_cus;	// Use this info if status = 1
+		customer* cir_head;		// Position X
 
 		int total_size;			// Number of all customer in the restaurant
 		customer* seq_head;		// Head of sequence list
@@ -135,7 +132,6 @@ class imp_res : public Restaurant
 			cus->prev = cus;
 			this->serve_size = 1;
 			this->cir_head = cus;
-			this->status = false;
 		}
 
 		void serveCustomer(bool clockwise, string name, int energy, string name_ref) {
@@ -155,7 +151,6 @@ class imp_res : public Restaurant
 				this->cir_head = cus;
 			}
 			this->serve_size += 1;
-			this->status = false;
 		}
 
 		void byeCustomer(string name) {
@@ -164,7 +159,6 @@ class imp_res : public Restaurant
 				this->cir_head = NULL;
 				this->serve_size = 0;
 				delete tmp; mem_leak--;
-				this->status = false;
 				return;
 			}
 			customer *rm_it = this->cir_head;
@@ -174,17 +168,10 @@ class imp_res : public Restaurant
 				if (loop > this->serve_size) return;
 				rm_it = rm_it->next;
 			}
-			if (rm_it == this->cir_head) {
-				this->cir_head = this->cir_head->next;
-			}
+			this->cir_head = (rm_it->energy > 0) ? rm_it->next : rm_it->prev;
 			customer *tmp = rm_it->next;
 			rm_it->prev->next = tmp;
 			tmp->prev = rm_it->prev;
-			this->status = true;
-			this->last_rm_cus.energy = rm_it->energy;
-			this->last_rm_cus.name = rm_it->name;
-			this->last_rm_cus.next = rm_it->next;
-			this->last_rm_cus.prev = rm_it->prev;
 			delete rm_it; mem_leak--;
 			this->serve_size -= 1;
 		}
@@ -239,7 +226,6 @@ class imp_res : public Restaurant
 		imp_res() {
 			this->serve_size = 0;
 			this->cir_head = NULL;
-			this->status = 0;
 			this->total_size = 0;
 			this->seq_head = NULL;
 			this->seq_tail = NULL;
@@ -271,16 +257,12 @@ class imp_res : public Restaurant
 			if (this->serve_size == 0) {
 				this->firstCustomer(name, energy);
 			} else if (this->serve_size < MAXSIZE/2) {
-				if (this->status == false) {
-					if (energy >= this->cir_head->energy)
-						this->serveCustomer(true, name, energy, this->cir_head->name);
-					else
-						this->serveCustomer(false, name, energy, this->cir_head->name);
-				} else {
-					this->serveCustomer(false, name, energy, this->last_rm_cus.next->name);
-				}
+				if (energy >= this->cir_head->energy)
+					this->serveCustomer(true, name, energy, this->cir_head->name);
+				else
+					this->serveCustomer(false, name, energy, this->cir_head->name);
 			} else {
-				customer *ref = this->status ? this->last_rm_cus.next : this->cir_head;
+				customer *ref = this->cir_head;
 				customer *tmp = ref;
 				int res = energy - tmp->energy;
 				for (int i = 0; i < this->serve_size; i++) {
@@ -329,10 +311,10 @@ class imp_res : public Restaurant
 		}
 		void REVERSAL() {
 			if (this->serve_size == 0) return;
-			customer *positive_prev = this->status ? this->last_rm_cus.prev : this->cir_head;
-			customer *positive_next = this->status ? this->last_rm_cus.next : this->cir_head->next;
-			customer *negative_prev = this->status ? this->last_rm_cus.prev : this->cir_head;
-			customer *negative_next = this->status ? this->last_rm_cus.next : this->cir_head->next;
+			customer *positive_prev = this->cir_head;
+			customer *positive_next = this->cir_head->next;
+			customer *negative_prev = this->cir_head;
+			customer *negative_next = this->cir_head->next;
 			
 			/*------Reverse positive values------*/
 			while (positive_prev->energy < 0) positive_prev = positive_prev->prev;
@@ -376,7 +358,7 @@ class imp_res : public Restaurant
 		}
 		void UNLIMITED_VOID() {
 			if (this->serve_size < 4) return;
-			customer *start = this->status ? this->last_rm_cus.next : this->cir_head;
+			customer *start = this->cir_head;
 			customer *end = start;
 			int sub_total = start->energy;
 			for (int i = 0; i < 3; i++) {
@@ -461,7 +443,7 @@ class imp_res : public Restaurant
 		void LIGHT(int num) {
 			if (this->serve_size <= 0) return;
 			if (num > 0) {
-				customer *tmp = this->status ? this->last_rm_cus.next : this->cir_head;
+				customer *tmp = this->cir_head;
 				int loop = 1;
 				while (loop <= this->serve_size && tmp != NULL) {
 					tmp->print();
@@ -470,7 +452,7 @@ class imp_res : public Restaurant
 				}
 			}
 			if (num < 0) {
-				customer *tmp = this->status ? this->last_rm_cus.prev : this->cir_head;
+				customer *tmp = this->cir_head;
 				int loop = 1;
 				while (loop <= this->serve_size && tmp != NULL) {
 					tmp->print();
