@@ -317,43 +317,65 @@ class imp_res : public Restaurant
 			customer *negative_next = this->cir_head->next;
 			
 			/*------Reverse positive values------*/
-			while (positive_prev->energy < 0) positive_prev = positive_prev->prev;
-			while (positive_next->energy < 0) positive_next = positive_next->next;
-			while (positive_prev != positive_next) {
-				int swap_energy = positive_prev->energy;
-				string swap_name = positive_prev->name;
-				positive_prev->energy = positive_next->energy;
-				positive_prev->name = positive_next->name;
-				positive_next->energy = swap_energy;
-				positive_next->name = swap_name;
-
-				do {
-					positive_prev = positive_prev->prev;
-				} while (positive_prev->energy < 0);
-				if (positive_prev == positive_next) break;
-				do {
-					positive_next = positive_next->next;
-				} while (positive_next->energy < 0);
+			int loop_prev = 1;
+			while (positive_prev->energy < 0) {
+				positive_prev = positive_prev->prev;
+				loop_prev++;
+				if (loop_prev > this->serve_size) break;
+			}
+			int loop_next = 1;
+			while (positive_next->energy < 0) {
+				positive_next = positive_next->next;
+				loop_next++;
+				if (loop_next > this->serve_size) break;
+			}
+			if (loop_next <= this->serve_size && loop_prev <= this->serve_size) {
+				while (positive_prev != positive_next) {
+					int swap_energy = positive_prev->energy;
+					string swap_name = positive_prev->name;
+					positive_prev->energy = positive_next->energy;
+					positive_prev->name = positive_next->name;
+					positive_next->energy = swap_energy;
+					positive_next->name = swap_name;
+					do {
+						positive_prev = positive_prev->prev;
+					} while (positive_prev->energy < 0);
+					if (positive_prev == positive_next) break;
+					do {
+						positive_next = positive_next->next;
+					} while (positive_next->energy < 0);
+				}
 			}
 			
 			/*------Reverse negative values------*/
-			while (negative_prev->energy > 0) negative_prev = negative_prev->prev;
-			while (negative_next->energy > 0) negative_next = negative_next->next;
-			while (negative_prev != negative_next) {
-				int swap_energy = negative_prev->energy;
-				string swap_name = negative_prev->name;
-				negative_prev->energy = negative_next->energy;
-				negative_prev->name = negative_next->name;
-				negative_next->energy = swap_energy;
-				negative_next->name = swap_name;
-
-				do {
-					negative_prev = negative_prev->prev;
-				} while (negative_prev->energy > 0);
-				if (negative_prev == negative_next) break;
-				do {
-					negative_next = negative_next->next;
-				} while (negative_next->energy > 0);
+			loop_prev = 1;
+			while (negative_prev->energy > 0) {
+				negative_prev = negative_prev->prev;
+				loop_prev++;
+				if (loop_prev > this->serve_size) break;
+			}
+			loop_next = 1;
+			while (negative_next->energy > 0) {
+				negative_next = negative_next->next;
+				loop_next++;
+				if (loop_next > this->serve_size) break;
+			}
+			if (loop_next <= this->serve_size && loop_prev <= this->serve_size) {
+				while (negative_prev != negative_next) {
+					int swap_energy = negative_prev->energy;
+					string swap_name = negative_prev->name;
+					negative_prev->energy = negative_next->energy;
+					negative_prev->name = negative_next->name;
+					negative_next->energy = swap_energy;
+					negative_next->name = swap_name;
+					do {
+						negative_prev = negative_prev->prev;
+					} while (negative_prev->energy > 0);
+					if (negative_prev == negative_next) break;
+					do {
+						negative_next = negative_next->next;
+					} while (negative_next->energy > 0);
+				}
 			}
 		}
 		void UNLIMITED_VOID() {
