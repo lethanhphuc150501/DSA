@@ -295,9 +295,7 @@ class imp_res : public Restaurant
 			}
 			if (!wait_to_serve) {
 				this->addSeqList(name, energy);
-			}
-			cout << name << " " << energy << endl;
-			cout << MAXSIZE << endl;			
+			}		
 		}
 		void BLUE(int num) {
 			if (num >= this->serve_size) {
@@ -317,7 +315,6 @@ class imp_res : public Restaurant
 				this->RED(this->top_queue->name, this->top_queue->energy);
 				this->dequeue();
 			}
-			cout << "blue "<< num << endl;
 		}
 		void PURPLE() {
 			if (this->wait_size <= 0) return;
@@ -329,7 +326,6 @@ class imp_res : public Restaurant
 			}
 			int swap_total = this->ShellSort(highest);
 			BLUE(swap_total % MAXSIZE);
-			cout << "purple"<< endl;
 		}
 		void REVERSAL() {
 			if (this->serve_size == 0) return;
@@ -377,7 +373,6 @@ class imp_res : public Restaurant
 					negative_next = negative_next->next;
 				} while (negative_next->energy > 0);
 			}
-			cout << "reversal" << endl;
 		}
 		void UNLIMITED_VOID() {
 			if (this->serve_size < 4) return;
@@ -462,7 +457,6 @@ class imp_res : public Restaurant
 				this->RED(this->top_queue->name, this->top_queue->energy);
 				this->dequeue();
 			}
-			cout << "domain_expansion" << endl;
 		}
 		void LIGHT(int num) {
 			if (this->serve_size <= 0) return;
@@ -491,7 +485,6 @@ class imp_res : public Restaurant
 					tmp = tmp->next;
 				}
 			}
-			cout << "light " << num << endl;
 		}
 
 		~imp_res() {

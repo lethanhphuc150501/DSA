@@ -33,15 +33,18 @@ void simulate(string filename, imp_res* r)
 		}
     	else if(str == "UNLIMITED_VOID") // UNLIMITED_VOID
      	{   	
+				cout << str << " " << endl;
     			r->UNLIMITED_VOID();
     	}
     	else if(str == "DOMAIN_EXPANSION") // DOMAIN_EXPANSION
     	{
+				cout << str << " " << endl;
     			r->DOMAIN_EXPANSION();
     	}
     	else // LIGHT <NUM>
     	{
                 ss >> num;
+				cout << str << " " << num << " " << endl;
     			r->LIGHT(stoi(num));
     	}
     }
