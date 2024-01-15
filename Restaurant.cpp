@@ -333,6 +333,9 @@ class imp_res : public Restaurant
 				while (positive_prev != positive_next) {
 					int swap_energy = positive_prev->energy;
 					string swap_name = positive_prev->name;
+					if (swap_name == this->cir_head->name) {
+						this->cir_head = positive_next;
+					}
 					positive_prev->energy = positive_next->energy;
 					positive_prev->name = positive_next->name;
 					positive_next->energy = swap_energy;
@@ -364,6 +367,9 @@ class imp_res : public Restaurant
 				while (negative_prev != negative_next) {
 					int swap_energy = negative_prev->energy;
 					string swap_name = negative_prev->name;
+					if (swap_name == this->cir_head->name) {
+						this->cir_head = negative_next;
+					}
 					negative_prev->energy = negative_next->energy;
 					negative_prev->name = negative_next->name;
 					negative_next->energy = swap_energy;
