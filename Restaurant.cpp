@@ -282,10 +282,10 @@ class imp_res : public Restaurant
 			} else {
 				customer *ref = this->status ? this->last_rm_cus.next : this->cir_head;
 				customer *tmp = ref;
-				int res = abs(energy) - abs(tmp->energy);
+				int res = energy - tmp->energy;
 				for (int i = 0; i < this->serve_size; i++) {
-					if (abs(res) < abs(abs(energy) - abs(tmp->energy))) {
-						res = abs(energy) - abs(tmp->energy);
+					if (abs(res) < abs(energy - tmp->energy)) {
+						res = energy - tmp->energy;
 						ref = tmp;
 					}
 					tmp = tmp->next;
