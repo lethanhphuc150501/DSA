@@ -428,7 +428,22 @@ class imp_res : public Restaurant
 				step_size++;
 			}
 			customer *p = start_rec;
+			customer *min_rec = start_rec;
+			int min = start_rec->energy;
+			while (p != end_rec) {
+				p = p->next;
+				if (min > p->energy) {
+					min = p->energy;
+					min_rec = p;
+				}
+			}
+			p = min_rec;			
 			while (p != end_rec->next) {
+				p->print();
+				p = p->next;
+			}
+			p = start_rec;
+			while (p != min_rec) {
 				p->print();
 				p = p->next;
 			}
