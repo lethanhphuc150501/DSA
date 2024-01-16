@@ -153,19 +153,19 @@ class imp_res : public Restaurant
 			this->serve_size += 1;
 		}
 
-		void byeCustomer(string name) {
+		int byeCustomer(string name) {
 			if (this->serve_size <= 1 && this->cir_head->name == name) {
 				customer *tmp = this->cir_head;
 				this->cir_head = NULL;
 				this->serve_size = 0;
 				delete tmp; mem_leak--;
-				return;
+				return 0;
 			}
 			customer *rm_it = this->cir_head;
 			int loop = 1;
 			while (rm_it->name != name) {
 				loop++;
-				if (loop > this->serve_size) return;
+				if (loop > this->serve_size) return -1;
 				rm_it = rm_it->next;
 			}
 			this->cir_head = (rm_it->energy > 0) ? rm_it->next : rm_it->prev;
@@ -174,6 +174,7 @@ class imp_res : public Restaurant
 			tmp->prev = rm_it->prev;
 			delete rm_it; mem_leak--;
 			this->serve_size -= 1;
+			return 0;
 		}
 
 		int SortSegment(int k, int segment, customer *nxt_cus) {
@@ -287,9 +288,15 @@ class imp_res : public Restaurant
 					this->rmSeqList(rm_name);
 				}
 			} else {
+				customer *tmp = this->seq_head;
+				string rm_name = tmp->name;
+				int ret = -1;
 				for (int i = 0; i < num; i++) {
-					string rm_name = this->seq_head->name;
-					this->byeCustomer(rm_name);
+					do {
+						rm_name = tmp->name;
+						ret = this->byeCustomer(rm_name);
+						tmp = tmp->next;
+					} while (ret != 0 && tmp != NULL);
 					this->rmSeqList(rm_name);
 				}
 			}
