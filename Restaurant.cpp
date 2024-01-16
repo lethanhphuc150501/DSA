@@ -457,32 +457,44 @@ class imp_res : public Restaurant
 				sum += tmp->energy;
 				tmp = tmp->next;
 			} while (tmp != NULL);
+			/* Print removed customer */
 			tmp = this->seq_tail;
+			if (sum >= 0) {
+				do {
+					if (tmp->energy < 0) tmp->print();
+					tmp = tmp->prev;
+				} while (tmp != NULL);
+			} else {
+				do {
+					if (tmp->energy > 0) tmp->print();
+					tmp = tmp->prev;
+				} while (tmp != NULL);
+			}
+			/* Remove customer */
+			tmp = this->seq_head;
 			string rm_name;
 			if (sum >= 0) {
 				do {
 					if (tmp->energy < 0) {
 						rm_name = tmp->name;
-						tmp->print();
-						tmp = tmp->prev;
+						tmp = tmp->next;
 						rmSeqList(rm_name);
 						byeCustomer(rm_name);
 						rmQueue(rm_name);
 					} else {
-						tmp = tmp->prev;
+						tmp = tmp->next;
 					}
 				} while (tmp != NULL);
 			} else {
 				do {
 					if (tmp->energy > 0) {
 						rm_name = tmp->name;
-						tmp->print();
-						tmp = tmp->prev;
+						tmp = tmp->next;
 						rmSeqList(rm_name);
 						byeCustomer(rm_name);
 						rmQueue(rm_name);
 					} else {
-						tmp = tmp->prev;
+						tmp = tmp->next;
 					}
 				} while (tmp != NULL);
 			}
