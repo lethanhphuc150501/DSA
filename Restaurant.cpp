@@ -154,7 +154,8 @@ class imp_res : public Restaurant
 		}
 
 		int byeCustomer(string name) {
-			if (this->serve_size <= 1 && this->cir_head->name == name) {
+			if (this->serve_size == 0) return -1;
+			if (this->serve_size == 1 && this->cir_head->name == name) {
 				customer *tmp = this->cir_head;
 				this->cir_head = NULL;
 				this->serve_size = 0;
