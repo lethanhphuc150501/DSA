@@ -414,15 +414,15 @@ class imp_res : public Restaurant
 				tmp_total = sub_total;
 				start_tmp = start;
 				end_tmp = end;
-				while (end_tmp->next != start) {
-					tmp_total = tmp_total - start_tmp->energy + end_tmp->next->energy;
-					start_tmp = start_tmp->next;
-					end_tmp = end_tmp->next;
+				for (int i = 0; i < this->serve_size; i++) {
 					if (tmp_total <= smallest) {
 						smallest = tmp_total;
 						start_rec = start_tmp;
 						end_rec = end_tmp;
 					}
+					tmp_total = tmp_total - start_tmp->energy + end_tmp->next->energy;
+					start_tmp = start_tmp->next;
+					end_tmp = end_tmp->next;
 				}
 				end = end->next;
 				step_size++;
@@ -438,10 +438,11 @@ class imp_res : public Restaurant
 				}
 			}
 			p = min_rec;			
-			while (p != end_rec->next) {
+			while (p != end_rec) {
 				p->print();
 				p = p->next;
 			}
+			end_rec->print();
 			p = start_rec;
 			while (p != min_rec) {
 				p->print();
