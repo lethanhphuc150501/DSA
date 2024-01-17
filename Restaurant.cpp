@@ -312,6 +312,13 @@ class imp_res : public Restaurant
 			customer *tmp = this->top_queue;
 			while (tmp != NULL) {
 				if (abs(highest->energy) < abs(tmp->energy)) highest = tmp;
+				else if (abs(highest->energy) == abs(tmp->energy)) {
+					customer *check_order = this->seq_tail;
+					while (check_order->name != highest->name && check_order->name != tmp->name && check_order != NULL) {
+						check_order = check_order->prev;
+					}
+					if (check_order->name == tmp->name) highest = tmp;
+				}
 				tmp = tmp->next;
 			}
 			int swap_total = this->ShellSort(highest);
