@@ -211,7 +211,13 @@ class imp_res : public Restaurant
 		}
 		
 		int ShellSort(customer *brk_cus) {
-			int k = first_incremental_value(this->wait_size);
+			customer *tmp = this->top_queue;
+			int num_of_element = 1;
+			while (tmp != NULL && tmp != brk_cus) {
+				tmp = tmp->next;
+				num_of_element++;
+			}
+			int k = first_incremental_value(num_of_element);
 			int swap_ovt = 0;
 			while (k >= 1) {
 				int segment = 0;
