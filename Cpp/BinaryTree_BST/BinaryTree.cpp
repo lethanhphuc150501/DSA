@@ -103,6 +103,18 @@ public:
         printPostorder(root);
         return "";
     }
+
+    int countTwoChildrenInSubTree(struct Node* node) {
+        if (node == NULL) return 0;
+        int left = countTwoChildrenInSubTree(node->pLeft);
+        int right = countTwoChildrenInSubTree(node->pRight);
+        if (node->pLeft != NULL && node->pRight != NULL) return 1 + left + right;
+        else return left + right;
+    }
+
+    int countTwoChildrenNode() {
+        return countTwoChildrenInSubTree(root);
+    }
     // STUDENT ANSWER END
 };
 
@@ -120,9 +132,6 @@ int main() {
     binaryTree.addNode("RLL",11, 2000);
     binaryTree.addNode("RLLL",11, 2000);
 
-    cout << binaryTree.getHeight() << endl;
-    cout << binaryTree.preOrder() << endl;
-    cout << binaryTree.inOrder() << endl;
-    cout << binaryTree.postOrder() << endl;
+    cout << binaryTree.countTwoChildrenNode();
     return 0;
 }
