@@ -66,7 +66,7 @@ public:
         return tree_height(root);
     }
 
-    void printPreorder(struct Node* node) {
+    void printPreorder(Node* node) {
         if (node == NULL) return;
         cout << node->value << " ";
         printPreorder(node->pLeft);
@@ -79,7 +79,7 @@ public:
         return "";
     }
 
-    void printInorder(struct Node* node) {
+    void printInorder(Node* node) {
         if (node == NULL) return;
         printInorder(node->pLeft);
         cout << node->value << " ";
@@ -92,7 +92,7 @@ public:
         return "";
     }
 
-    void printPostorder(struct Node* node) {
+    void printPostorder(Node* node) {
         if (node == NULL) return;
         printPostorder(node->pLeft);
         printPostorder(node->pRight);
@@ -104,7 +104,7 @@ public:
         return "";
     }
 
-    int countTwoChildrenInSubTree(struct Node* node) {
+    int countTwoChildrenInSubTree(Node* node) {
         if (node == NULL) return 0;
         int left = countTwoChildrenInSubTree(node->pLeft);
         int right = countTwoChildrenInSubTree(node->pRight);
@@ -114,6 +114,18 @@ public:
 
     int countTwoChildrenNode() {
         return countTwoChildrenInSubTree(root);
+    }
+
+    V calculateSumOfLeafs(Node* node) {
+        if (node == NULL) return 0;
+        int sum_left = calculateSumOfLeafs(node->pLeft);
+        int sum_right = calculateSumOfLeafs(node->pRight);
+        if (node->pLeft == NULL && node->pRight == NULL) return node->value + sum_left + sum_right;
+        else return sum_left + sum_right;
+    }
+
+    V sumOfLeafs() {
+        return calculateSumOfLeafs(root);
     }
     // STUDENT ANSWER END
 };
@@ -132,6 +144,6 @@ int main() {
     binaryTree.addNode("RLL",11, 2000);
     binaryTree.addNode("RLLL",11, 2000);
 
-    cout << binaryTree.countTwoChildrenNode();
+    cout << binaryTree.sumOfLeafs();
     return 0;
 }
