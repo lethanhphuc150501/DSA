@@ -69,6 +69,24 @@ public:
         }
         return ss.str();
     }
+
+    T getMin() {
+        Node *tmp = this->root;
+        if (tmp == NULL) return 0;
+        while (tmp->pLeft != NULL) {
+            tmp = tmp->pLeft;
+        }
+        return tmp->value;
+    }
+
+    T getMax() {
+        Node *tmp = this->root;
+        if (tmp == NULL) return 0;
+        while (tmp->pRight != NULL) {
+            tmp = tmp->pRight;
+        }
+        return tmp->value;
+    }
     
     string inOrder(){
         return inOrderRec(this->root);
@@ -87,14 +105,12 @@ public:
 };
 
 int main() {
+    int values[] = { 75,13,83,83,30,40,10,86,17,21,45,22,22,72,63 };
     BinarySearchTree<int> bst;
-bst.add(9);
-bst.add(2);
-bst.add(10);
-bst.add(8);
-cout << bst.inOrder()<<endl;
-bst.add(11);
-bst.deleteNode(9);
-cout << bst.inOrder();
+    for (int i = 0; i < 15; ++i) {
+        bst.add(values[i]);
+    }
+    cout << bst.getMin() << endl;
+    cout << bst.getMax() << endl;
     return 0;
 }
