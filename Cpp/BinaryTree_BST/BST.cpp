@@ -87,6 +87,29 @@ public:
         }
         return tmp->value;
     }
+
+    bool find(T i, Node* node) {
+        if (node == NULL) return false;
+        if (i < node->value) find(i, node->pLeft);
+        else if (i > node->value) find(i, node->pRight);
+        else return true;
+    }
+
+    bool find(T i) {
+        return find(i, this->root);
+    }
+
+    T sum(Node* node, T l, T r) {
+        if (node == NULL) return 0;
+        int left = sum(node->pLeft, l, r);
+        int right = sum(node->pRight, l, r);
+        if (node->value >= l && node->value <= r) return node->value + left + right;
+        else return left + right;
+    }
+
+    T sum(T l, T r) {
+        return sum(this->root, l, r);
+    }
     
     string inOrder(){
         return inOrderRec(this->root);
@@ -110,7 +133,8 @@ int main() {
     for (int i = 0; i < 15; ++i) {
         bst.add(values[i]);
     }
-    cout << bst.getMin() << endl;
-    cout << bst.getMax() << endl;
+
+    cout << bst.find(34) << endl;
+    cout << bst.sum(10, 40);
     return 0;
 }
