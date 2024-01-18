@@ -127,6 +127,21 @@ public:
     V sumOfLeafs() {
         return calculateSumOfLeafs(root);
     }
+
+    void printLevel(int level, Node* node) {
+        if (node == NULL) return;
+        if (level == 1) cout << node->value << " ";
+        if (level > 1) {
+            printLevel(level - 1, node->pLeft);
+            printLevel(level - 1, node->pRight);
+        }
+    }
+
+    void BFS() {
+        for (int i = 1; i <= this->getHeight(); i++) {
+            printLevel(i, root);
+        }
+    };
     // STUDENT ANSWER END
 };
 
@@ -144,6 +159,6 @@ int main() {
     binaryTree.addNode("RLL",11, 2000);
     binaryTree.addNode("RLLL",11, 2000);
 
-    cout << binaryTree.sumOfLeafs();
+    binaryTree.BFS();
     return 0;
 }
