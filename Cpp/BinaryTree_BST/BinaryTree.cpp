@@ -142,6 +142,26 @@ public:
             printLevel(i, root);
         }
     };
+
+    bool isBST(Node *node) {
+        if (node == NULL) return true;
+        bool left = isBST(node->pLeft);
+        bool right = isBST(node->pRight);
+        bool current = true;
+        if (node->pLeft != NULL) {
+            if (node->value > node->pLeft->value) current = true;
+            else return false;
+        }
+        if (node->pRight != NULL) {
+            if (node->value < node->pRight->value) current = true;
+            else return false;
+        }
+        return current & left & right;
+    }
+
+    bool isBST() {
+        return isBST(root);
+    }
     // STUDENT ANSWER END
 };
 
@@ -159,6 +179,6 @@ int main() {
     binaryTree.addNode("RLL",11, 2000);
     binaryTree.addNode("RLLL",11, 2000);
 
-    binaryTree.BFS();
+    cout << binaryTree.isBST();
     return 0;
 }
