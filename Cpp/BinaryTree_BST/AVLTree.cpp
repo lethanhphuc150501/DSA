@@ -206,6 +206,28 @@ public:
         this->root = AVLInsert(this->root, value, &taller);
     }
 
+    void printInOrder(Node* root) {
+        if (root == NULL) return;
+        printInOrder(root->pLeft);
+        cout << root->data << " ";
+        printInOrder(root->pRight);
+    }
+
+    void printInorder() {
+        printInOrder(this->root);
+    }
+
+    bool search(const T &value, Node* root) {
+        if (root == NULL) return false;
+        if (value < root->data) search(value, root->pLeft);
+        else if (value > root->data) search(value, root->pRight);
+        else return true;
+    }
+
+    bool search(const T &value) {
+        return search(value, this->root);
+    }
+
     class Node {
     private:
         T data;
@@ -220,12 +242,18 @@ public:
 };
 
 int main() {
-    	
     AVLTree<int> avl;
-    int arr[] = {25,73,89,23,14,53,51,55,17,16,21,12,14,90,6,54,12,60,8,53,86,90,69,18,69,100,0,70,77,65};
-    for (int i = 0; i < 30; i++){
+    int arr[] = {10,52,98,32,68,92,40,13,42,63,99,100};
+    for (int i = 0; i < 12; i++){
         avl.insert(arr[i]);
     }
-    avl.printTreeStructure();
+    cout << avl.search(0);
+    cout << endl;
+    avl.printInorder();
+    cout << endl;
+    avl.insert(45);
+    cout << avl.search(45);
+    cout << endl;
+    avl.printInorder();
     return 0;
 }
