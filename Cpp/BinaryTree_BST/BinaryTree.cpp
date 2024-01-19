@@ -162,23 +162,19 @@ public:
     bool isBST() {
         return isBST(root);
     }
+
+    int getDiameter() {
+        return 1 + tree_height(root->pLeft) + tree_height(root->pRight);
+    }
     // STUDENT ANSWER END
 };
 
 int main() {
     BinaryTree<int, int> binaryTree;
-    binaryTree.addNode("",2, 4);
-    binaryTree.addNode("L",3, 6);
-    binaryTree.addNode("R",5, 9);
+    binaryTree.addNode("",1, 4);
+    binaryTree.addNode("L",2, 6);
+    binaryTree.addNode("R",3, 9);
     binaryTree.addNode("LL",4, 10);
-    binaryTree.addNode("LR",6, -3);
-    binaryTree.addNode("LLL",7, 2);
-    binaryTree.addNode("LLLR",8, 7);
-    binaryTree.addNode("RR",9, 30);
-    binaryTree.addNode("RL",10, 307);
-    binaryTree.addNode("RLL",11, 2000);
-    binaryTree.addNode("RLLL",11, 2000);
-
-    cout << binaryTree.isBST();
+    cout << binaryTree.getDiameter();
     return 0;
 }
