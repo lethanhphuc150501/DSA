@@ -29,6 +29,9 @@ public:
     int size();
     bool isEmpty();
     bool contains(T item);
+    int getItem(T item);
+    void remove(T item);
+    void clear();
     void printHeap() {
         cout << "Max Heap [ ";
         for (int i = 0; i < count; i++)
@@ -117,11 +120,31 @@ bool Heap<T>::contains(T item) {
     }
     return false;
 }
+template <class T>
+int Heap<T>::getItem(T item) {
+    for (int i = 0; i < this->count; i++) {
+        if (this->elements[i] == item) return i;
+    }
+    return -1;
+}
+template <class T>
+void Heap<T>::remove(T item) {
+    int rm_index = getItem(item);
+    if (item == -1) return;
+    this->count--;
+    this->elements[rm_index] = this->elements[this->count];
+    reheapDown(rm_index);
+}
+template <class T>
+void Heap<T>::clear() {
+    this->count = 0;
+}
 int main() {    	
     Heap<int> maxHeap;
-    for (int i = 0; i < 10; i++) {
-        maxHeap.push(i);
-    }
-    cout << maxHeap.isEmpty();
+    int arr[] = { 13, 19, 20, 7, 15, 12, 16, 10, 8, 9, 3, 6, 18, 2, 14, 1, 17, 4, 11, 5 };
+    for (int i = 0; i < 20; ++i)
+        maxHeap.push(arr[i]);
+    maxHeap.clear();
+    maxHeap.printHeap();
     return 0;
 }
