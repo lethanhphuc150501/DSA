@@ -24,6 +24,11 @@ public:
         delete []elements;
     }
     void push(T item);
+    T peek();
+    bool pop();
+    int size();
+    bool isEmpty();
+    bool contains(T item);
     void printHeap() {
         cout << "Max Heap [ ";
         for (int i = 0; i < count; i++)
@@ -33,6 +38,7 @@ public:
 private:
     void ensureCapacity(int minCapacity); 
     void reheapUp(int position);
+    void reheapDown(int position);
 };
 
 // Your code here
@@ -48,7 +54,6 @@ void Heap<T>::ensureCapacity(int minCapacity) {
         this->elements = newStorage;
     }
 }
-
 template <class T>
 void Heap<T>::reheapUp(int position) {
     if (position > 0) {
@@ -61,7 +66,21 @@ void Heap<T>::reheapUp(int position) {
         }
     }
 }
-
+template <class T>
+void Heap<T>::reheapDown(int position) {
+    int left = 2 * position + 1;
+    int right = 2 * position + 2;
+    if (left < this->count) {
+        int larger = left;
+        if (right < this->count && this->elements[right] > this->elements[left]) larger = right;
+        if (this->elements[larger] > this->elements[position]) {
+            int tmp = this->elements[larger];
+            this->elements[larger] = this->elements[position];
+            this->elements[position] = tmp;
+            reheapDown(larger);
+        }
+    }
+}
 template <class T>
 void Heap<T>::push(T item) {
     ensureCapacity(this->count + 1);
@@ -69,11 +88,40 @@ void Heap<T>::push(T item) {
     reheapUp(this->count);
     this->count++;
 }
-
+template <class T>
+T Heap<T>::peek() {
+    return this->elements[0];
+}
+template <class T>
+bool Heap<T>::pop() {
+    if (this->count > 0) {
+        this->count--;
+        this->elements[0] = this->elements[this->count];
+        reheapDown(0);
+        return true;
+    }
+    return false;
+}
+template <class T>
+int Heap<T>::size() {
+    return this->count;
+}
+template <class T>
+bool Heap<T>::isEmpty() {
+    return (this->count == 0);
+}
+template <class T>
+bool Heap<T>::contains(T item) {
+    for (int i = 0; i < this->count; i++) {
+        if (this->elements[i] == item) return true;
+    }
+    return false;
+}
 int main() {    	
     Heap<int> maxHeap;
-    for(int i = 0; i <5;i++)
+    for (int i = 0; i < 10; i++) {
         maxHeap.push(i);
-    maxHeap.printHeap();
+    }
+    cout << maxHeap.isEmpty();
     return 0;
 }
