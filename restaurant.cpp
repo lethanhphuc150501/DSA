@@ -61,6 +61,55 @@ void LAPSE(string name) {
 	}
 	tail_of_list = NULL;
 	cout << "New name: " << name << endl;
+	/* Count frequency of letters */
+	list_node = newHuffNode(name[0], 1, NULL, NULL);
+	tail_of_list = list_node;
+	for (int i = 0; i < name.length(); i++) {
+		struct HuffNode_T* tmp = list_node;
+		while (tmp != NULL) {
+			if (name[i] == tmp->letter) break;
+			tmp = tmp->right;
+		}
+		if (tmp == NULL || i == 0) {
+			int count = 0;
+			for (int j = i; j < name.length(); j++) {
+				if (name[i] == name[j]) count++;
+			}
+			if (i == 0) list_node->freq = count;
+			else {
+				tmp = list_node;
+				while (tmp != NULL) {
+					if (count < tmp->freq) break;
+					if (count == tmp->freq) {
+						if ((name[i] >= 'a' && name[i] <= 'z') && (tmp->letter >= 'A' && tmp->letter <= 'Z')) break;
+						if ((name[i] >= 'a' && name[i] <= 'z') && (tmp->letter >= 'a' && tmp->letter <= 'z') && name[i] < tmp->letter) break;
+						if ((name[i] >= 'A' && name[i] <= 'Z') && (tmp->letter >= 'A' && tmp->letter <= 'Z') && name[i] < tmp->letter) break;
+					}
+					tmp = tmp->right;
+				}
+				if (tmp != NULL) {
+					struct HuffNode_T* prev = tmp->left;
+					if (prev == NULL) {
+						prev = newHuffNode(name[i], count, NULL, list_node);
+						tmp->left = prev;
+						list_node = prev;
+					} else {
+						prev->right = newHuffNode(name[i], count, prev, tmp);
+						tmp->left = prev->right;
+					}
+				} else {
+					tail_of_list->right = newHuffNode(name[i], count, tail_of_list, NULL);
+					tail_of_list = tail_of_list->right;
+				}
+			}
+		}
+	}
+	// Unit Test
+	tmp = list_node;
+	while (tmp != NULL) {
+		cout << tmp->letter << " - " << tmp->freq << endl;
+		tmp = tmp->right;
+	}
 }
 
 void KOKUSEN() {
