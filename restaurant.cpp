@@ -23,43 +23,20 @@ void LAPSE(string name) {
 	/* Count frequency of letters */
 	struct HuffNode_T* list_node = newHuffNode(name[0], 1, NULL, NULL);
 	struct HuffNode_T* tail_of_list = list_node;
-	for (int i = 0; i < name.length(); i++) {
+	for (int i = 1; i < name.length(); i++) {
 		struct HuffNode_T* tmp = list_node;
 		while (tmp != NULL) {
-			if (name[i] == tmp->letter) break;
+			if (name[i] == tmp->letter) {
+				tmp->freq++;
+				break;
+			}
 			tmp = tmp->right;
 		}
-		if (tmp == NULL || i == 0) {
-			int count = 0;
-			for (int j = i; j < name.length(); j++) {
-				if (name[i] == name[j]) count++;
-			}
-			if (i == 0) list_node->freq = count;
-			else {
-				tmp = list_node;
-				while (tmp != NULL) {
-					if (count > tmp->freq) break;
-					if (count == tmp->freq && (name[i] >= 'a' && name[i] <= 'z') && (tmp->letter >= 'A' && tmp->letter <= 'Z')) break;
-					tmp = tmp->right;
-				}
-				if (tmp != NULL) {
-					struct HuffNode_T* prev = tmp->left;
-					if (prev == NULL) {
-						prev = newHuffNode(name[i], count, NULL, list_node);
-						tmp->left = prev;
-						list_node = prev;
-					} else {
-						prev->right = newHuffNode(name[i], count, prev, tmp);
-						tmp->left = prev->right;
-					}
-				} else {
-					tail_of_list->right = newHuffNode(name[i], count, tail_of_list, NULL);
-					tail_of_list = tail_of_list->right;
-				}
-			}
+		if (tmp == NULL) {
+			tail_of_list->right = newHuffNode(name[i], 1, NULL, NULL);
+			tail_of_list = tail_of_list->right;
 		}
 	}
-
 	// Unit Test
 	struct HuffNode_T* tmp = list_node;
 	while (tmp != NULL) {
