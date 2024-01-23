@@ -43,6 +43,24 @@ void LAPSE(string name) {
 		cout << tmp->letter << " - " << tmp->freq << endl;
 		tmp = tmp->right;
 	}
+	/* Apply Caeser cipher */
+	for (int i = 0; i < name.length(); i++) {
+		struct HuffNode_T* tmp = list_node;
+		while (tmp != NULL) {
+			if (tmp->letter == name[i]) break;
+			tmp = tmp->right;
+		}
+		if (name[i] >= 'a' && name[i] <= 'z') name[i] = (name[i] - 'a' + tmp->freq) % 26 + 'a';
+		else name[i] = (name[i] - 'A' + tmp->freq) % 26 + 'A';
+	}
+	/* Clear raw list */
+	while (list_node != NULL) {
+		struct HuffNode_T* prev = list_node;
+		list_node = list_node->right;
+		delete prev;
+	}
+	tail_of_list = NULL;
+	cout << "New name: " << name << endl;
 }
 
 void KOKUSEN() {
