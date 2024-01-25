@@ -18,10 +18,10 @@ struct HuffNode_T* newHuffNode(char letter, int freq, struct HuffNode_T *left, s
 	new_node->right = right;
 	return new_node;
 }
-/*------------- CODE END: Define a node in Huffman Tree -------------*/
-void LAPSE(string name) {
-	/* Count frequency of letters */
-	struct HuffNode_T* char_arr = (struct HuffNode_T*) malloc(sizeof(struct HuffNode_T) * name.length());
+
+int countFreqOfLetter(string name, struct HuffNode_T** char_arr_addr) {
+	struct HuffNode_T* char_arr = *char_arr_addr;
+	char_arr = (struct HuffNode_T*) malloc(sizeof(struct HuffNode_T) * name.length());
 	int char_arr_size = 0;
 	for (int i = 0; i < name.length(); i++) {
 		int j = 0;
@@ -37,10 +37,14 @@ void LAPSE(string name) {
 		}
 	}
 	char_arr = (struct HuffNode_T*) realloc(char_arr, sizeof(struct HuffNode_T) * char_arr_size);
-	// Unit Test
-	for (int i = 0; i < char_arr_size; i++) {
-		cout << char_arr[i].letter << " - " << char_arr[i].freq << endl;
-	}
+	*char_arr_addr = char_arr;
+	return char_arr_size;
+}
+
+string applyCaesarCipher(string name) {
+	/* Count frequency of letters */
+	struct HuffNode_T* char_arr = NULL;
+	int char_arr_size = countFreqOfLetter(name, &char_arr);
 	/* Apply Caeser cipher */
 	for (int i = 0; i < name.length(); i++) {
 		int j = 0;
@@ -52,6 +56,12 @@ void LAPSE(string name) {
 	}
 	/* Clear raw list */
 	delete char_arr;
+	return name;
+}
+
+/*------------- CODE END: Define a node in Huffman Tree -------------*/
+void LAPSE(string name) {
+	name = applyCaesarCipher(name);
 	cout << "New name: " << name << endl;
 	// /* Count frequency of letters */
 	// list_node = newHuffNode(name[0], 1, NULL, NULL);
