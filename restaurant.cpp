@@ -59,10 +59,65 @@ string applyCaesarCipher(string name) {
 	return name;
 }
 
+bool isUpperCase(char letter) {
+	return (letter >= 'A' && letter <= 'Z');
+}
+
+bool isLowerCase(char letter) {
+	return (letter >= 'a' && letter <= 'z');
+}
+
+bool isASmallerThanB(char letter_A, char letter_B) {
+	return ((isLowerCase(letter_A) && isUpperCase(letter_B)) || 
+			(isLowerCase(letter_A) && isLowerCase(letter_B) && letter_A < letter_B) ||
+			(isUpperCase(letter_A) && isUpperCase(letter_B) && letter_A < letter_B));
+}
+
+void reheapDown(struct HuffNode_T** min_heap_addr, int pos, int last_pos) {
+	struct HuffNode_T* min_heap = *min_heap_addr;
+	int left = pos * 2 + 1;
+	int right = pos * 2 + 2;
+	if (left <= last_pos) {
+		int smaller = left;
+		if (right <= last_pos && (min_heap[right].freq < min_heap[left].freq || 
+			(min_heap[right].freq == min_heap[left].freq && isASmallerThanB(min_heap[right].letter, min_heap[left].letter)))) {
+			smaller = right;
+		}
+		if (min_heap[smaller].freq < min_heap[pos].freq ||
+			(min_heap[smaller].freq == min_heap[pos].freq && isASmallerThanB(min_heap[smaller].letter, min_heap[pos].letter))) {
+			int tmp_freq = min_heap[smaller].freq;
+			char tmp_letter = min_heap[smaller].letter;
+			min_heap[smaller].freq = min_heap[pos].freq;
+			min_heap[smaller].letter = min_heap[pos].letter;
+			min_heap[pos].freq = tmp_freq;
+			min_heap[pos].letter = tmp_letter;
+			reheapDown(&min_heap, smaller, last_pos);
+		}
+	}
+	*min_heap_addr = min_heap;
+}
+
+void buildHeap(struct HuffNode_T** char_arr_addr, int size) {
+	struct HuffNode_T* char_arr = *char_arr_addr;
+	int last_pos = size - 1;
+	int pos = (last_pos - 1) / 2;
+	for (int i = pos; i >= 0; i--) {
+		reheapDown(&char_arr, i, last_pos);
+	}
+	*char_arr_addr = char_arr;
+}
+
+
 /*------------- CODE END: Define a node in Huffman Tree -------------*/
 void LAPSE(string name) {
 	name = applyCaesarCipher(name);
 	cout << "New name: " << name << endl;
+	struct HuffNode_T* heap_for_huffman = NULL;
+	int heap_size = countFreqOfLetter(name, &heap_for_huffman);
+	buildHeap(&heap_for_huffman, heap_size);
+	for (int i = 0; i < heap_size; i++) {
+		cout << heap_for_huffman[i].letter << " - " << heap_for_huffman[i].freq << endl;
+	}
 	// /* Count frequency of letters */
 	// list_node = newHuffNode(name[0], 1, NULL, NULL);
 	// tail_of_list = list_node;
