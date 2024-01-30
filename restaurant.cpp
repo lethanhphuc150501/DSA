@@ -73,6 +73,24 @@ bool isASmallerThanB(char letter_A, char letter_B) {
 			(isUpperCase(letter_A) && isUpperCase(letter_B) && letter_A < letter_B));
 }
 
+void reheapUp(struct HuffNode_T** min_heap_addr, int pos) {
+	struct HuffNode_T* min_heap = *min_heap_addr;
+	if (pos > 0) {
+		int parent = (pos - 1) / 2;
+		if (min_heap[parent].freq > min_heap[pos].freq ||
+			(min_heap[parent].freq == min_heap[pos].freq && isASmallerThanB(min_heap[pos].letter, min_heap[parent].letter))) {
+			int tmp_freq = min_heap[parent].freq;
+			char tmp_letter = min_heap[parent].letter;
+			min_heap[parent].freq = min_heap[pos].freq;
+			min_heap[parent].letter = min_heap[pos].letter;
+			min_heap[pos].freq = tmp_freq;
+			min_heap[pos].letter = tmp_letter;
+			reheapUp(&min_heap, parent);
+		}
+	}
+	*min_heap_addr = min_heap;
+}
+
 void reheapDown(struct HuffNode_T** min_heap_addr, int pos, int last_pos) {
 	struct HuffNode_T* min_heap = *min_heap_addr;
 	int left = pos * 2 + 1;
@@ -107,14 +125,22 @@ void buildHeap(struct HuffNode_T** char_arr_addr, int size) {
 	*char_arr_addr = char_arr;
 }
 
-struct HuffNode_T popHeap(struct HuffNode_T** char_arr_addr, int* size) {
-	struct HuffNode_T* char_arr = *char_arr_addr;
-	struct HuffNode_T ret = char_arr[0];
+struct HuffNode_T popHeap(struct HuffNode_T** min_heap_addr, int* size) {
+	struct HuffNode_T* min_heap = *min_heap_addr;
+	struct HuffNode_T ret = min_heap[0];
 	(*size)--;
-	char_arr[0] = char_arr[*size];
-	reheapDown(&char_arr, 0, *size);
-	*char_arr_addr = char_arr;
+	min_heap[0] = min_heap[*size];
+	reheapDown(&min_heap, 0, *size);
+	*min_heap_addr = min_heap;
 	return ret;
+}
+
+void pushHeap(struct HuffNode_T merged_node, struct HuffNode_T** min_heap_addr, int* size) {
+	struct HuffNode_T* min_heap = *min_heap_addr;
+	min_heap[*size] = merged_node;
+	(*size)++;
+	reheapUp(&min_heap, (*size) - 1);
+	*min_heap_addr = min_heap;
 }
 
 /*------------- CODE END: Define a node in Huffman Tree -------------*/
@@ -127,9 +153,15 @@ void LAPSE(string name) {
 	for (int i = 0; i < heap_size; i++) {
 		cout << heap_for_huffman[i].letter << " - " << heap_for_huffman[i].freq << endl;
 	}
-	while (heap_size > 0) {
-		struct HuffNode_T first_node = popHeap(&heap_for_huffman, &heap_size);
-		cout << "Heap size: " << heap_size << "\tRemoved node: " << first_node.letter << " - " << first_node.freq << endl;
+	struct HuffNode_T first_node = popHeap(&heap_for_huffman, &heap_size);
+	cout << "After pop" << endl;
+	for (int i = 0; i < heap_size; i++) {
+		cout << heap_for_huffman[i].letter << " - " << heap_for_huffman[i].freq << endl;
+	}
+	pushHeap(first_node, &heap_for_huffman, &heap_size);
+	cout << "After push" << endl;
+	for (int i = 0; i < heap_size; i++) {
+		cout << heap_for_huffman[i].letter << " - " << heap_for_huffman[i].freq << endl;
 	}
 	// /* Count frequency of letters */
 	// list_node = newHuffNode(name[0], 1, NULL, NULL);
