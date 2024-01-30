@@ -10,7 +10,7 @@ struct HuffNode_T {
 	struct HuffNode_T *right;
 };
 
-struct HuffNode_T* newHuffNode(char letter, int freq, struct HuffNode_T *left, struct HuffNode_T *right) {
+struct HuffNode_T* newHuffNode(unsigned char letter, int freq, struct HuffNode_T *left, struct HuffNode_T *right) {
 	struct HuffNode_T* new_node = (struct HuffNode_T*) malloc(sizeof(struct HuffNode_T));
 	new_node->letter = letter;
 	new_node->freq = freq;
@@ -63,11 +63,11 @@ string applyCaesarCipher(string name) {
 	return name;
 }
 
-bool isUpperCase(char letter) {
+bool isUpperCase(unsigned char letter) {
 	return (letter >= 'A' && letter <= 'Z');
 }
 
-bool isLowerCase(char letter) {
+bool isLowerCase(unsigned char letter) {
 	return (letter >= 'a' && letter <= 'z');
 }
 
@@ -156,6 +156,27 @@ void pushHeap(struct HuffNode_T* merged_node, struct HuffNode_T*** min_heap_addr
 	*min_heap_addr = min_heap;
 }
 
+unsigned char nextOrderNumber(unsigned char cur_order_num) {
+	cur_order_num++;
+	if (cur_order_num == 'a') return 'z' + 1;
+	if (cur_order_num == 'A') return 'Z' + 1;
+	return cur_order_num;
+}
+
+void buildHuff(struct HuffNode_T*** tree_heap_addr, int heap_size) {
+	struct HuffNode_T** tree_heap = *tree_heap_addr;
+	struct HuffNode_T *tmp1, *tmp2, *tmp3;
+	unsigned char order_num = 0;
+	while (heap_size > 1) {
+		tmp1 = popHeap(&tree_heap, &heap_size);
+		tmp2 = popHeap(&tree_heap, &heap_size);
+		tmp3 = newHuffNode(order_num, (tmp1->freq) + (tmp2->freq), tmp1, tmp2);
+		pushHeap(tmp3, &tree_heap, &heap_size);
+		order_num = nextOrderNumber(order_num);
+	}
+	*tree_heap_addr = tree_heap;
+}
+
 /*------------- CODE END: Define a node in Huffman Tree -------------*/
 void LAPSE(string name) {
 	name = applyCaesarCipher(name);
@@ -166,16 +187,7 @@ void LAPSE(string name) {
 	for (int i = 0; i < heap_size; i++) {
 		cout << heap_for_huffman[i]->letter << " - " << heap_for_huffman[i]->freq << endl;
 	}
-	struct HuffNode_T* first_node = popHeap(&heap_for_huffman, &heap_size);
-	cout << "After pop" << endl;
-	for (int i = 0; i < heap_size; i++) {
-		cout << heap_for_huffman[i]->letter << " - " << heap_for_huffman[i]->freq << endl;
-	}
-	pushHeap(first_node, &heap_for_huffman, &heap_size);
-	cout << "After push" << endl;
-	for (int i = 0; i < heap_size; i++) {
-		cout << heap_for_huffman[i]->letter << " - " << heap_for_huffman[i]->freq << endl;
-	}
+	buildHuff(&heap_for_huffman, heap_size);
 }
 
 void KOKUSEN() {
