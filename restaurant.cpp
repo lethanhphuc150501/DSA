@@ -107,6 +107,15 @@ void buildHeap(struct HuffNode_T** char_arr_addr, int size) {
 	*char_arr_addr = char_arr;
 }
 
+struct HuffNode_T popHeap(struct HuffNode_T** char_arr_addr, int* size) {
+	struct HuffNode_T* char_arr = *char_arr_addr;
+	struct HuffNode_T ret = char_arr[0];
+	(*size)--;
+	char_arr[0] = char_arr[*size];
+	reheapDown(&char_arr, 0, *size);
+	*char_arr_addr = char_arr;
+	return ret;
+}
 
 /*------------- CODE END: Define a node in Huffman Tree -------------*/
 void LAPSE(string name) {
@@ -117,6 +126,10 @@ void LAPSE(string name) {
 	buildHeap(&heap_for_huffman, heap_size);
 	for (int i = 0; i < heap_size; i++) {
 		cout << heap_for_huffman[i].letter << " - " << heap_for_huffman[i].freq << endl;
+	}
+	while (heap_size > 0) {
+		struct HuffNode_T first_node = popHeap(&heap_for_huffman, &heap_size);
+		cout << "Heap size: " << heap_size << "\tRemoved node: " << first_node.letter << " - " << first_node.freq << endl;
 	}
 	// /* Count frequency of letters */
 	// list_node = newHuffNode(name[0], 1, NULL, NULL);
