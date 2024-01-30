@@ -4,7 +4,7 @@ int MAXSIZE;
 
 /*------------ CODE BEGIN: Define a node in Huffman Tree ------------*/
 struct HuffNode_T {
-	char letter;
+	unsigned char letter;
 	int freq;
 	struct HuffNode_T *left;
 	struct HuffNode_T *right;
@@ -71,18 +71,34 @@ bool isLowerCase(char letter) {
 	return (letter >= 'a' && letter <= 'z');
 }
 
-bool isASmallerThanB(char letter_A, char letter_B) {
-	return ((isLowerCase(letter_A) && isUpperCase(letter_B)) || 
-			(isLowerCase(letter_A) && isLowerCase(letter_B) && letter_A < letter_B) ||
-			(isUpperCase(letter_A) && isUpperCase(letter_B) && letter_A < letter_B));
+bool isASmallerThanB(struct HuffNode_T* node_A, struct HuffNode_T* node_B) {
+	if (node_A->freq < node_B->freq) return true;
+	if (node_A->freq == node_B->freq) {
+		if ((isUpperCase(node_A->letter) || isLowerCase(node_A->letter)) && 
+			(isUpperCase(node_B->letter) || isLowerCase(node_B->letter))) {
+			// Both A and B are letter nodes
+			return ((isLowerCase(node_A->letter) && isUpperCase(node_B->letter)) || 
+					(isLowerCase(node_A->letter) && isLowerCase(node_B->letter) && node_A->letter < node_B->letter) ||
+					(isUpperCase(node_A->letter) && isUpperCase(node_B->letter) && node_A->letter < node_B->letter));
+		} else if (isUpperCase(node_A->letter) || isLowerCase(node_A->letter)) {
+			// A is letter node, B is merged node
+			return true;
+		} else if (isUpperCase(node_B->letter) || isLowerCase(node_B->letter)) {
+			// A is merged node, B is letter node
+			return false;
+		} else {
+			// Both A and B are merged nodes
+			if (node_A->letter < node_B->letter) return true;
+		}
+	}
+	return false;
 }
 
 void reheapUp(struct HuffNode_T*** min_heap_addr, int pos) {
 	struct HuffNode_T** min_heap = *min_heap_addr;
 	if (pos > 0) {
 		int parent = (pos - 1) / 2;
-		if (min_heap[parent]->freq > min_heap[pos]->freq ||
-			(min_heap[parent]->freq == min_heap[pos]->freq && isASmallerThanB(min_heap[pos]->letter, min_heap[parent]->letter))) {
+		if (isASmallerThanB(min_heap[pos], min_heap[parent])) {
 			struct HuffNode_T* tmp_data = min_heap[parent];
 			min_heap[parent] = min_heap[pos];
 			min_heap[pos] = tmp_data;
@@ -98,12 +114,10 @@ void reheapDown(struct HuffNode_T*** min_heap_addr, int pos, int last_pos) {
 	int right = pos * 2 + 2;
 	if (left <= last_pos) {
 		int smaller = left;
-		if (right <= last_pos && (min_heap[right]->freq < min_heap[left]->freq || 
-			(min_heap[right]->freq == min_heap[left]->freq && isASmallerThanB(min_heap[right]->letter, min_heap[left]->letter)))) {
+		if (right <= last_pos && isASmallerThanB(min_heap[right], min_heap[left])) {
 			smaller = right;
 		}
-		if (min_heap[smaller]->freq < min_heap[pos]->freq ||
-			(min_heap[smaller]->freq == min_heap[pos]->freq && isASmallerThanB(min_heap[smaller]->letter, min_heap[pos]->letter))) {
+		if (isASmallerThanB(min_heap[smaller], min_heap[pos])) {
 			struct HuffNode_T* tmp_data = min_heap[smaller];
 			min_heap[smaller] = min_heap[pos];
 			min_heap[pos] = tmp_data;
