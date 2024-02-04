@@ -132,6 +132,42 @@ int heightOfTree(const struct HuffNode_T* root) {
 	return left > right ? (left + 1) : (right + 1);
 }
 
+struct HuffNode_T* rotateRight(struct HuffNode_T* root) {
+	struct HuffNode_T* tmp = root->left;
+	root->left = tmp->right;
+	tmp->right = root;
+	return tmp;	// new root
+}
+
+struct HuffNode_T* rotateLeft(struct HuffNode_T* root) {
+	struct HuffNode_T* tmp = root->right;
+	root->right = tmp->left;
+	tmp->left = root;
+	return tmp;	// new root
+}
+
+struct HuffNode_T* leftBalance(struct HuffNode_T* root) {
+	struct HuffNode_T* leftTree = root->left;
+	// Case 1: Right of left
+	if (heightOfTree(leftTree->right) > heightOfTree(leftTree->left)) {
+		root->left = rotateLeft(leftTree);
+		root = rotateRight(root);
+	} else	// Case 2: Left of left
+		root = rotateRight(root);
+	return root;
+}
+
+struct HuffNode_T* rightBalance(struct HuffNode_T* root) {
+	struct HuffNode_T* rightTree = root->right;
+	// Case 3: Left of right
+	if (heightOfTree(rightTree->left) > heightOfTree(rightTree->right)) {
+		root->right = rotateLeft(rightTree);
+		root = rotateLeft(root);
+	} else	// Case 4: Right of right
+		root = rotateLeft(root);
+	return root;
+}
+
 void buildHeap(struct HuffNode_T** char_arr_addr, int size) {
 	struct HuffNode_T* char_arr = *char_arr_addr;
 	int last_pos = size - 1;
@@ -154,9 +190,12 @@ struct HuffNode_T* popHeap(struct HuffNode_T** min_heap_addr, int* size) {
 	return ret;
 }
 
-void pushHeap(struct HuffNode_T merged_node, struct HuffNode_T** min_heap_addr, int* size) {
+void pushHeap(struct HuffNode_T* merged_node, struct HuffNode_T** min_heap_addr, int* size) {
 	struct HuffNode_T* min_heap = *min_heap_addr;
-	min_heap[*size] = merged_node;
+	min_heap[*size].freq = merged_node->freq;
+	min_heap[*size].letter = merged_node->letter;
+	min_heap[*size].left = merged_node->left;
+	min_heap[*size].right = merged_node->right;
 	reheapUp(&min_heap, *size);
 	(*size)++;
 	*min_heap_addr = min_heap;
@@ -169,19 +208,43 @@ unsigned char nextOrderNumber(unsigned char cur_order_num) {
 	return cur_order_num;
 }
 
+struct HuffNode_T* balanceTree(struct HuffNode_T* root, bool* change_flag) {
+	if (root == NULL) return root;
+	int balance_factor = heightOfTree(root->left) - heightOfTree(root->right);
+	if (balance_factor >= 2) {
+		root = leftBalance(root);
+		*change_flag = true;
+		return root;
+	} else if (balance_factor <= -2) {
+		root = rightBalance(root);
+		*change_flag = true;
+		return root;
+	}
+	root->left = balanceTree(root->left, change_flag);
+	if (*change_flag) return root;
+	root->right = balanceTree(root->right, change_flag);
+	return root;
+}
+
 void buildHuff(struct HuffNode_T** tree_heap_addr, int heap_size) {
 	struct HuffNode_T* tree_heap = *tree_heap_addr;
-	struct HuffNode_T *tmp1, *tmp2, tmp3;
+	struct HuffNode_T *tmp1, *tmp2, *tmp3;
 	unsigned char order_num = 0;
 	while (heap_size > 1) {
 		tmp1 = popHeap(&tree_heap, &heap_size);
 		tmp2 = popHeap(&tree_heap, &heap_size);
-		tmp3.letter = order_num;
-		tmp3.freq = tmp1->freq + tmp2->freq;
-		tmp3.left = tmp1;
-		tmp3.right = tmp2;
+		tmp3 = newHuffNode(order_num, tmp1->freq + tmp2->freq, tmp1, tmp2);
+		bool is_tree_change = false;
+		for (int i = 0; i < 3; i++) {
+			tmp3 = balanceTree(tmp3, &is_tree_change);
+			if (!is_tree_change) break;
+			else is_tree_change = false;
+		}
+		order_num = nextOrderNumber(order_num);
+		tmp3->letter = order_num;
 		pushHeap(tmp3, &tree_heap, &heap_size);
 		order_num = nextOrderNumber(order_num);
+		delete tmp3;
 	}
 	*tree_heap_addr = tree_heap;
 }
