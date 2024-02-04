@@ -125,6 +125,13 @@ void reheapDown(struct HuffNode_T** min_heap_addr, int pos, int last_pos) {
 	*min_heap_addr = min_heap;
 }
 
+int heightOfTree(const struct HuffNode_T* root) {
+	if (root == NULL) return 0;
+	int left = heightOfTree(root->left);
+	int right = heightOfTree(root->right);
+	return left > right ? (left + 1) : (right + 1);
+}
+
 void buildHeap(struct HuffNode_T** char_arr_addr, int size) {
 	struct HuffNode_T* char_arr = *char_arr_addr;
 	int last_pos = size - 1;
@@ -200,14 +207,8 @@ void LAPSE(string name) {
 		cout << heap_for_huffman[i].letter << " - " << heap_for_huffman[i].freq << endl;
 	}
 	buildHuff(&heap_for_huffman, heap_size);
-	struct HuffNode_T tmp[17];
-	for (int i = 0; i < 17; i++) {
-		tmp[i] = heap_for_huffman[i];
-	}
+	cout << "Height of tree: " << heightOfTree(&heap_for_huffman[0]);
 	removeTree(&heap_for_huffman[0]);
-	for (int i = 0; i < 17; i++) {
-		tmp[i] = heap_for_huffman[i];
-	}
 }
 
 void KOKUSEN() {
