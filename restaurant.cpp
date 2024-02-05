@@ -259,6 +259,47 @@ void removeTree(struct HuffNode_T* root) {
 	delete root;
 }
 
+struct encodeChar_T {
+	char letter;
+	union {
+		int raw_data;
+		char* data;
+	} encode;
+	struct encodeChar_T* next;
+};
+
+struct encodeChar_T* encodeCharacter(struct HuffNode_T* root, int tmp) {
+	struct encodeChar_T* ret = NULL;
+	if (isUpperCase(root->letter) || isLowerCase(root->letter)) {
+		ret = (struct encodeChar_T*) malloc(sizeof(struct encodeChar_T));
+		ret->letter = root->letter;
+		ret->encode.raw_data = tmp;
+		ret->next = NULL;
+	} else {
+		struct encodeChar_T* left = encodeCharacter(root->left, tmp * 2);
+		struct encodeChar_T* right = encodeCharacter(root->right, tmp * 2 + 1);
+		ret = left;
+		while (left->next != NULL) left = left->next;
+		left->next = right;
+	}
+	return ret;
+}
+
+char* convertRawData(int raw) {
+	char bin_ret[32];
+	int i = 0;
+	while (raw > 0) {
+	    bin_ret[i] = (raw % 2) ? '1' : '0';
+	    raw /= 2;
+	    i++;
+	}
+	char* ret = (char*) malloc(sizeof(char) * i);
+	for (int j = 0; j < i - 1; j++) {
+		ret[j] = bin_ret[i - j - 2];
+	}
+	return ret;
+}
+
 /*------------- CODE END: Define a node in Huffman Tree -------------*/
 void LAPSE(string name) {
 	name = applyCaesarCipher(name);
@@ -270,7 +311,12 @@ void LAPSE(string name) {
 		cout << heap_for_huffman[i].letter << " - " << heap_for_huffman[i].freq << endl;
 	}
 	buildHuff(&heap_for_huffman, heap_size);
-	cout << "Height of tree: " << heightOfTree(&heap_for_huffman[0]);
+	struct encodeChar_T* huff_result = encodeCharacter(heap_for_huffman, 1);
+	struct encodeChar_T* tmp = huff_result;
+	while (tmp != NULL) {
+		tmp->encode.data = convertRawData(tmp->encode.raw_data);
+		tmp = tmp->next;
+	}
 	removeTree(&heap_for_huffman[0]);
 }
 
