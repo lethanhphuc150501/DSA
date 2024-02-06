@@ -2,14 +2,13 @@
 
 int MAXSIZE;
 
-/*------------ CODE BEGIN: Define a node in Huffman Tree ------------*/
+/*------------ CODE BEGIN: Support functions for Building Huffman tree ------------*/
 struct HuffNode_T {
 	unsigned char letter;
 	int freq;
 	struct HuffNode_T *left;
 	struct HuffNode_T *right;
 };
-
 struct HuffNode_T* newHuffNode(unsigned char letter, int freq, struct HuffNode_T *left, struct HuffNode_T *right) {
 	struct HuffNode_T* new_node = (struct HuffNode_T*) malloc(sizeof(struct HuffNode_T));
 	new_node->letter = letter;
@@ -60,15 +59,12 @@ string applyCaesarCipher(string name) {
 	delete char_arr;
 	return name;
 }
-
 bool isUpperCase(unsigned char letter) {
 	return (letter >= 'A' && letter <= 'Z');
 }
-
 bool isLowerCase(unsigned char letter) {
 	return (letter >= 'a' && letter <= 'z');
 }
-
 bool isASmallerThanB(struct HuffNode_T node_A, struct HuffNode_T node_B) {
 	if (node_A.freq < node_B.freq) return true;
 	if (node_A.freq == node_B.freq) {
@@ -91,7 +87,6 @@ bool isASmallerThanB(struct HuffNode_T node_A, struct HuffNode_T node_B) {
 	}
 	return false;
 }
-
 void reheapUp(struct HuffNode_T** min_heap_addr, int pos) {
 	struct HuffNode_T* min_heap = *min_heap_addr;
 	if (pos > 0) {
@@ -105,7 +100,6 @@ void reheapUp(struct HuffNode_T** min_heap_addr, int pos) {
 	}
 	*min_heap_addr = min_heap;
 }
-
 void reheapDown(struct HuffNode_T** min_heap_addr, int pos, int last_pos) {
 	struct HuffNode_T* min_heap = *min_heap_addr;
 	int left = pos * 2 + 1;
@@ -124,28 +118,24 @@ void reheapDown(struct HuffNode_T** min_heap_addr, int pos, int last_pos) {
 	}
 	*min_heap_addr = min_heap;
 }
-
 int heightOfTree(const struct HuffNode_T* root) {
 	if (root == NULL) return 0;
 	int left = heightOfTree(root->left);
 	int right = heightOfTree(root->right);
 	return left > right ? (left + 1) : (right + 1);
 }
-
 struct HuffNode_T* rotateRight(struct HuffNode_T* root) {
 	struct HuffNode_T* tmp = root->left;
 	root->left = tmp->right;
 	tmp->right = root;
 	return tmp;	// new root
 }
-
 struct HuffNode_T* rotateLeft(struct HuffNode_T* root) {
 	struct HuffNode_T* tmp = root->right;
 	root->right = tmp->left;
 	tmp->left = root;
 	return tmp;	// new root
 }
-
 struct HuffNode_T* leftBalance(struct HuffNode_T* root) {
 	struct HuffNode_T* leftTree = root->left;
 	// Case 1: Right of left
@@ -156,7 +146,6 @@ struct HuffNode_T* leftBalance(struct HuffNode_T* root) {
 		root = rotateRight(root);
 	return root;
 }
-
 struct HuffNode_T* rightBalance(struct HuffNode_T* root) {
 	struct HuffNode_T* rightTree = root->right;
 	// Case 3: Left of right
@@ -167,7 +156,6 @@ struct HuffNode_T* rightBalance(struct HuffNode_T* root) {
 		root = rotateLeft(root);
 	return root;
 }
-
 void buildHeap(struct HuffNode_T** char_arr_addr, int size) {
 	struct HuffNode_T* char_arr = *char_arr_addr;
 	int last_pos = size - 1;
@@ -177,7 +165,6 @@ void buildHeap(struct HuffNode_T** char_arr_addr, int size) {
 	}
 	*char_arr_addr = char_arr;
 }
-
 struct HuffNode_T* popHeap(struct HuffNode_T** min_heap_addr, int* size) {
 	if (*size == 0) return NULL;
 	struct HuffNode_T* min_heap = *min_heap_addr;
@@ -189,7 +176,6 @@ struct HuffNode_T* popHeap(struct HuffNode_T** min_heap_addr, int* size) {
 	*min_heap_addr = min_heap;
 	return ret;
 }
-
 void pushHeap(struct HuffNode_T* merged_node, struct HuffNode_T** min_heap_addr, int* size) {
 	struct HuffNode_T* min_heap = *min_heap_addr;
 	min_heap[*size].freq = merged_node->freq;
@@ -200,14 +186,12 @@ void pushHeap(struct HuffNode_T* merged_node, struct HuffNode_T** min_heap_addr,
 	(*size)++;
 	*min_heap_addr = min_heap;
 }
-
 unsigned char nextOrderNumber(unsigned char cur_order_num) {
 	cur_order_num++;
 	if (cur_order_num == 'a') return 'z' + 1;
 	if (cur_order_num == 'A') return 'Z' + 1;
 	return cur_order_num;
 }
-
 struct HuffNode_T* balanceTree(struct HuffNode_T* root, bool* change_flag) {
 	if (root == NULL) return root;
 	int balance_factor = heightOfTree(root->left) - heightOfTree(root->right);
@@ -225,7 +209,6 @@ struct HuffNode_T* balanceTree(struct HuffNode_T* root, bool* change_flag) {
 	root->right = balanceTree(root->right, change_flag);
 	return root;
 }
-
 void buildHuff(struct HuffNode_T** tree_heap_addr, int heap_size) {
 	struct HuffNode_T* tree_heap = *tree_heap_addr;
 	struct HuffNode_T *tmp1, *tmp2, *tmp3;
@@ -248,7 +231,6 @@ void buildHuff(struct HuffNode_T** tree_heap_addr, int heap_size) {
 	}
 	*tree_heap_addr = tree_heap;
 }
-
 void removeTree(struct HuffNode_T* root) {
 	if (root->left != NULL) {
 		removeTree(root->left);
@@ -258,7 +240,6 @@ void removeTree(struct HuffNode_T* root) {
 	}
 	delete root;
 }
-
 struct encodeChar_T {
 	char letter;
 	union {
@@ -267,7 +248,6 @@ struct encodeChar_T {
 	} encode;
 	struct encodeChar_T* next;
 };
-
 struct encodeChar_T* encodeCharacter(struct HuffNode_T* root, int tmp) {
 	struct encodeChar_T* ret = NULL;
 	if (isUpperCase(root->letter) || isLowerCase(root->letter)) {
@@ -284,7 +264,6 @@ struct encodeChar_T* encodeCharacter(struct HuffNode_T* root, int tmp) {
 	}
 	return ret;
 }
-
 char* convertRawData(int raw) {
 	char bin_ret[32];
 	int i = 0;
@@ -299,8 +278,16 @@ char* convertRawData(int raw) {
 	}
 	return ret;
 }
-
-/*------------- CODE END: Define a node in Huffman Tree -------------*/
+int convertStringBinary(char str_bin[], int str_len) {
+	int mul = 1;
+	int ret = 0;
+	for (int i = 0; i < str_len; i++) {
+		if (str_bin[i] == '1') ret += mul;
+		mul = mul * 2;
+	}
+	return ret;
+}
+/*------------- CODE END: Support functions for Building Huffman tree -------------*/
 void LAPSE(string name) {
 	name = applyCaesarCipher(name);
 	cout << "New name: " << name << endl;
@@ -315,8 +302,22 @@ void LAPSE(string name) {
 	struct encodeChar_T* tmp = huff_result;
 	while (tmp != NULL) {
 		tmp->encode.data = convertRawData(tmp->encode.raw_data);
+		cout << tmp->letter << " - " << tmp->encode.data << endl;
 		tmp = tmp->next;
 	}
+	char encode_name_reverse[10];
+	int encode_slot = 10;
+	for (int i = name.length() - 1; i >= 0; i--) {
+		tmp = huff_result;
+		while (tmp != NULL && tmp->letter != name[i]) tmp = tmp->next;
+		for (int j = strlen(tmp->encode.data) - 1; j >= 0 && encode_slot > 0; j--) {
+			encode_slot--;
+			encode_name_reverse[encode_slot] = tmp->encode.data[j];
+		}
+		if (encode_slot <= 0) break;
+	}
+	int result = convertStringBinary(encode_name_reverse, strlen(encode_name_reverse));
+	cout << result << endl;
 	removeTree(&heap_for_huffman[0]);
 }
 
