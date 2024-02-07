@@ -293,15 +293,25 @@ struct customer_seat_G {
 	struct customer_seat_G* left;
 	struct customer_seat_G* right;
 };
+struct fifo_node {
+	int result;
+	struct fifo_node* next;
+};
 struct area_G {
 	int ID;
 	struct customer_seat_G* root;
+	struct {
+		struct fifo_node* head;
+		struct fifo_node* tail;
+	} fifo_order;
 };
 struct area_G* initGojoRestaurant() {
 	struct area_G* ret = (struct area_G*) malloc(sizeof(struct area_G) * MAXSIZE);
 	for (int i = 0; i < MAXSIZE; i++) {
 		ret[i].ID = i + 1;
 		ret[i].root = NULL;
+		ret[i].fifo_order.head = NULL;
+		ret[i].fifo_order.tail = NULL;
 	}
 	return ret;
 }
@@ -320,6 +330,16 @@ struct customer_seat_G* addBST(struct customer_seat_G* root, int result) {
 }
 struct area_G* addCustomertoGojo(struct area_G* restaurant, int result) {
 	int ID = result % MAXSIZE + 1;
+	struct fifo_node* tmp = (struct fifo_node*) malloc(sizeof(struct fifo_node));
+	tmp->next = NULL;
+	tmp->result = result;
+	if (restaurant[ID - 1].fifo_order.head == NULL) {
+		restaurant[ID - 1].fifo_order.head = tmp;
+		restaurant[ID - 1].fifo_order.tail = tmp;
+	} else {
+		restaurant[ID - 1].fifo_order.tail->next = tmp;
+		restaurant[ID - 1].fifo_order.tail = tmp;
+	}
 	restaurant[ID - 1].root = addBST(restaurant[ID - 1].root, result);
 	return restaurant;
 }
