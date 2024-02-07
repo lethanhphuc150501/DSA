@@ -286,6 +286,39 @@ int convertStringBinary(char str_bin[], int str_len) {
 	return ret;
 }
 /*------------- CODE END: Support functions for Building Huffman tree -------------*/
+
+/*------------------------- CODE BEGIN: Gojo's Restaurant -------------------------*/
+struct customer_seat_G {
+	int result;
+	struct customer_seat_G* left;
+	struct customer_seat_G* right;
+};
+struct area_G {
+	int ID;
+	struct customer_seat_G* root;
+};
+struct area_G* initGojoRestaurant() {
+	struct area_G* ret = (struct area_G*) malloc(sizeof(struct area_G) * MAXSIZE);
+	for (int i = 0; i < MAXSIZE; i++) {
+		ret[i].ID = i + 1;
+		ret[i].root = NULL;
+	}
+	return ret;
+}
+struct customer_seat_G* addBST(struct customer_seat_G* root, int result) {
+	if (root == NULL) {
+		struct customer_seat_G* root = (struct customer_seat_G*) malloc(sizeof(struct customer_seat_G));
+		root->left = NULL;
+		root->right = NULL;
+		root->result = result;
+		return root;
+	} else {
+		if (result >= root->result) root->right = addBST(root->right, result);
+		else root->left = addBST(root->left, result);
+	}
+	return root;
+}
+/*-------------------------- CODE END: Gojo's Restaurant --------------------------*/
 void LAPSE(string name) {
 	if (name.length() < 3) return;
 	name = applyCaesarCipher(name);
