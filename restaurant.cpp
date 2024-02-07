@@ -17,7 +17,6 @@ struct HuffNode_T* newHuffNode(unsigned char letter, int freq, struct HuffNode_T
 	new_node->right = right;
 	return new_node;
 }
-
 int countFreqOfLetter(string name, struct HuffNode_T** char_arr_addr) {
 	struct HuffNode_T* char_arr = *char_arr_addr;
 	char_arr = (struct HuffNode_T*) malloc(sizeof(struct HuffNode_T) * name.length());
@@ -41,7 +40,6 @@ int countFreqOfLetter(string name, struct HuffNode_T** char_arr_addr) {
 	*char_arr_addr = char_arr;
 	return char_arr_size;
 }
-
 string applyCaesarCipher(string name) {
 	/* Count frequency of letters */
 	struct HuffNode_T* char_arr = NULL;
@@ -289,11 +287,13 @@ int convertStringBinary(char str_bin[], int str_len) {
 }
 /*------------- CODE END: Support functions for Building Huffman tree -------------*/
 void LAPSE(string name) {
+	if (name.length() < 3) return;
 	name = applyCaesarCipher(name);
 	cout << "New name: " << name << endl;
 	struct HuffNode_T* heap_for_huffman = NULL;	// Remind for cleaning up heap after finishing LAPSE
 	int heap_size = countFreqOfLetter(name, &heap_for_huffman);
 	buildHeap(&heap_for_huffman, heap_size);
+	int result = 0;
 	for (int i = 0; i < heap_size; i++) {
 		cout << heap_for_huffman[i].letter << " - " << heap_for_huffman[i].freq << endl;
 	}
@@ -316,7 +316,7 @@ void LAPSE(string name) {
 		}
 		if (encode_slot <= 0) break;
 	}
-	int result = convertStringBinary(encode_name_reverse, strlen(encode_name_reverse));
+	result = convertStringBinary(encode_name_reverse, strlen(encode_name_reverse));
 	cout << result << endl;
 	removeTree(&heap_for_huffman[0]);
 }

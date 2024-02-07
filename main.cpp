@@ -4,6 +4,7 @@
 int main(int argc, char* argv[]) {
     // string fileName = "test.txt";
     // simulate(fileName);
-    LAPSE("piBdoktutmigrdcjavfuusjaqxzsltxjqyjgssalloqOeeayyypjehvpzpzfnudfbidhsm");
+    LAPSE("xy");
+    LAPSE("aaaabbbccd");
     return 0;
 }
