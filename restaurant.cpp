@@ -318,6 +318,11 @@ struct customer_seat_G* addBST(struct customer_seat_G* root, int result) {
 	}
 	return root;
 }
+struct area_G* addCustomertoGojo(struct area_G* restaurant, int result) {
+	int ID = result % MAXSIZE + 1;
+	restaurant[ID - 1].root = addBST(restaurant[ID - 1].root, result);
+	return restaurant;
+}
 /*-------------------------- CODE END: Gojo's Restaurant --------------------------*/
 void LAPSE(string name) {
 	if (name.length() < 3) return;

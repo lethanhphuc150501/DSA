@@ -4,12 +4,11 @@
 int main(int argc, char* argv[]) {
     // string fileName = "test.txt";
     // simulate(fileName);
-    struct customer_seat_G* root = NULL;
-    root = addBST(root, 9);
-    root = addBST(root, 2);
-    root = addBST(root, 10);
-    root = addBST(root, 8);
-    root = addBST(root, 9);
-    root = addBST(root, 11);
+    MAXSIZE = 3;
+    struct area_G* Gojo_restaurant = initGojoRestaurant();
+    for (int i = 10; i < 15; i++) Gojo_restaurant = addCustomertoGojo(Gojo_restaurant, i);
+    for (int i = 4; i >= 0; i--) Gojo_restaurant = addCustomertoGojo(Gojo_restaurant, i);
+    for (int i = 19; i >= 15; i--) Gojo_restaurant = addCustomertoGojo(Gojo_restaurant, i);
+    for (int i = 5; i < 10; i++) Gojo_restaurant = addCustomertoGojo(Gojo_restaurant, i);
     return 0;
 }
