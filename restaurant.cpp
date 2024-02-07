@@ -344,6 +344,40 @@ struct area_G* addCustomertoGojo(struct area_G* restaurant, int result) {
 	return restaurant;
 }
 /*-------------------------- CODE END: Gojo's Restaurant --------------------------*/
+
+/*------------------------ CODE BEGIN: Sukuna's restaurant ------------------------*/
+struct lifo_node {
+	int result;
+	struct lifo_node* next;
+};
+struct area_S {
+	struct {
+		struct lifo_node* head;
+		struct lifo_node* tail;
+	} lifo_order;
+	int size;
+	int label;
+	unsigned int last_modified; 
+};
+struct min_heap_S {
+	int size;
+	struct area_S* heap_root;
+};
+struct min_heap_S* initSukunaRestaurant() {
+	struct min_heap_S* ret = (struct min_heap_S*) malloc(sizeof(struct min_heap_S));
+	ret->size = 0;
+	ret->heap_root = (struct area_S*) malloc(sizeof(struct area_S) * MAXSIZE);
+	for (int i = 0; i < MAXSIZE; i++) {
+		ret->heap_root[i].size = 0;
+		ret->heap_root[i].label = i + 1;
+		ret->heap_root[i].last_modified = 0;
+		ret->heap_root[i].lifo_order.head = NULL;
+		ret->heap_root[i].lifo_order.tail = NULL;
+	}
+	return ret;
+}
+
+/*------------------------ CODE END: Sukuna's restaurant ------------------------*/
 void LAPSE(string name) {
 	if (name.length() < 3) return;
 	name = applyCaesarCipher(name);
