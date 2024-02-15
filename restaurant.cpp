@@ -270,10 +270,12 @@ char* convertRawData(int raw) {
 	    raw /= 2;
 	    i++;
 	}
+	if (i == 0) return NULL;
 	char* ret = (char*) malloc(sizeof(char) * i);
 	for (int j = 0; j < i - 1; j++) {
 		ret[j] = bin_ret[i - j - 2];
 	}
+	ret[i - 1] = 0;
 	return ret;
 }
 int convertStringBinary(char str_bin[], int str_len) {
@@ -438,6 +440,7 @@ struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result
 	return restaurant;
 }
 /*------------------------ CODE END: Sukuna's restaurant ------------------------*/
+struct HuffNode_T* g_lastest_customer = NULL;
 void LAPSE(string name) {
 	if (name.length() < 3) return;
 	name = applyCaesarCipher(name);
@@ -470,7 +473,10 @@ void LAPSE(string name) {
 	}
 	result = convertStringBinary(encode_name_reverse, strlen(encode_name_reverse));
 	cout << result << endl;
-	removeTree(&heap_for_huffman[0]);
+	struct HuffNode_T* rm_tree = g_lastest_customer;
+	g_lastest_customer = heap_for_huffman;
+	if (rm_tree != NULL) removeTree(rm_tree);
+	
 }
 
 void KOKUSEN() {
@@ -480,9 +486,15 @@ void KOKUSEN() {
 void KEITEIKEN(int num) {
 	cout << "KEITEIKEN " << num << endl;
 }
-
+void printTreeInOrder(struct HuffNode_T* root) {
+	if (root == NULL) return;
+	printTreeInOrder(root->left);
+	if (isUpperCase(root->letter) || isLowerCase(root->letter)) cout << root->letter << endl;
+	else cout << root->freq << endl;
+	printTreeInOrder(root->right);
+}
 void HAND() {
-	cout << "HAND " << endl;
+	printTreeInOrder(g_lastest_customer);
 }
 
 void LIMITLESS(int num) {
