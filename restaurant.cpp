@@ -441,23 +441,20 @@ struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result
 }
 /*------------------------ CODE END: Sukuna's restaurant ------------------------*/
 struct HuffNode_T* g_lastest_customer = NULL;
+struct area_G* g_Gojo_restaurant = NULL;
+struct min_heap_S* g_Sukuna_restaurant = NULL;
 void LAPSE(string name) {
 	if (name.length() < 3) return;
 	name = applyCaesarCipher(name);
-	cout << "New name: " << name << endl;
 	struct HuffNode_T* heap_for_huffman = NULL;	// Remind for cleaning up heap after finishing LAPSE
 	int heap_size = countFreqOfLetter(name, &heap_for_huffman);
 	buildHeap(&heap_for_huffman, heap_size);
 	int result = 0;
-	for (int i = 0; i < heap_size; i++) {
-		cout << heap_for_huffman[i].letter << " - " << heap_for_huffman[i].freq << endl;
-	}
 	buildHuff(&heap_for_huffman, heap_size);
 	struct encodeChar_T* huff_result = encodeCharacter(heap_for_huffman, 1);
 	struct encodeChar_T* tmp = huff_result;
 	while (tmp != NULL) {
 		tmp->encode.data = convertRawData(tmp->encode.raw_data);
-		cout << tmp->letter << " - " << tmp->encode.data << endl;
 		tmp = tmp->next;
 	}
 	char encode_name_reverse[10];
@@ -473,6 +470,19 @@ void LAPSE(string name) {
 	}
 	result = convertStringBinary(encode_name_reverse, strlen(encode_name_reverse));
 	cout << result << endl;
+	if (result % 2 == 1) {
+		if (g_Gojo_restaurant == NULL) {
+			cout << "Error: Gojo restaurant has not been initialized" << endl;
+			return;
+		}
+		g_Gojo_restaurant = addCustomertoGojo(g_Gojo_restaurant, result);
+	} else {
+		if (g_Sukuna_restaurant == NULL) {
+			cout << "Error: Sukuna restaurant has not been initialized" << endl;
+			return;
+		}
+		g_Sukuna_restaurant = addCustomertoSukuna(g_Sukuna_restaurant, result);
+	}
 	struct HuffNode_T* rm_tree = g_lastest_customer;
 	g_lastest_customer = heap_for_huffman;
 	// Clean previous Huffman tree
@@ -520,6 +530,8 @@ void simulate(string filename) {
 		if (str == "MAXSIZE") {
 			ss >> maxsize;
 			MAXSIZE = stoi(maxsize);
+			g_Gojo_restaurant = initGojoRestaurant();
+			g_Sukuna_restaurant = initSukunaRestaurant();
 		} else if (str == "LAPSE") {
 			ss >> name;
 			LAPSE(name);
