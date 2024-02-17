@@ -4,16 +4,14 @@
 int main(int argc, char* argv[]) {
     // string fileName = "test.txt";
     // simulate(fileName);
-    MAXSIZE = 3;
+    MAXSIZE = 7;
     g_Gojo_restaurant = initGojoRestaurant();
-    g_Sukuna_restaurant = initSukunaRestaurant();
-    LAPSE("piBdoktutmigrdcjavfuusjaqxzsltxjqyjgssalloqOeeayyypjehvpzpzfnudfbidhsm");
-    LAPSE("Johnuigfifbahjasbdfhjbasdhjf");
-    LAPSE("iuasgfuigweibjaskdfbjksadf");
-    LAPSE("iuiwehruihqwUIAGSIDiernbsandfb");
-    LAPSE("uiewhqruihqiuwerhnbdasnbfnmasd");
-    LAPSE("ukkajhsdfjkasbndbmnFJKHJKsdbfsabdf");
-    LAPSE("kjasdbfjksbDFFDFFfdjksabfdjkasdf");
-    LAPSE("skjafdbkjasfnmFFFFsaddnfdf");
+    g_Gojo_restaurant = addCustomertoGojo(g_Gojo_restaurant, 22);
+    g_Gojo_restaurant = addCustomertoGojo(g_Gojo_restaurant, 8);
+    g_Gojo_restaurant = addCustomertoGojo(g_Gojo_restaurant, 15);
+    g_Gojo_restaurant = addCustomertoGojo(g_Gojo_restaurant, 1);
+    g_Gojo_restaurant = addCustomertoGojo(g_Gojo_restaurant, 43);
+    g_Gojo_restaurant = addCustomertoGojo(g_Gojo_restaurant, 29);
+    cout << numOfWays(g_Gojo_restaurant[1].root);
     return 0;
 }

@@ -496,7 +496,37 @@ void LAPSE(string name) {
 		tmp = huff_result;
 	}
 }
-
+int sizeOfBST(const struct customer_seat_G* root) {
+	if (root == NULL) return 0;
+	int left = sizeOfBST(root->left);
+	int right = sizeOfBST(root->right);
+	return 1 + left + right;
+}
+int dfs(const struct customer_seat_G* root, int** pascal_triangle) {
+	int num_of_children = sizeOfBST(root);
+	if (num_of_children < 3) return 1;
+	int left_ways = dfs(root->left, pascal_triangle) % MAXSIZE;
+	int right_ways = dfs(root->right, pascal_triangle) % MAXSIZE;
+	return ((left_ways * right_ways) % MAXSIZE) * pascal_triangle[num_of_children - 1][sizeOfBST(root->left)] % MAXSIZE;
+}
+int numOfWays(const struct customer_seat_G* root) {
+	int num_of_children = sizeOfBST(root);
+	if (num_of_children <= 1) return 0;
+	int** table = (int**) malloc(sizeof(int*) * num_of_children);
+	for (int i = 0; i < num_of_children; i++) {
+		table[i] = (int*) malloc(sizeof(int) * (i + 1));
+	}
+	for (int i = 0; i < num_of_children; i++) {
+		for (int j = 0; j <= i; j++) {
+			if (j == 0 || j == i) table[i][j] = 1;
+			else table[i][j] = (table[i - 1][j - 1] % MAXSIZE + table[i - 1][j] % MAXSIZE) % MAXSIZE;
+		}
+	}
+	int ret = dfs(root, table) % MAXSIZE;
+	for (int i = 0; i < num_of_children; i++) delete table[i];
+	delete table;
+	return ret;
+}
 void KOKUSEN() {
 	cout << "KOKUSEN" << endl;
 }
