@@ -475,8 +475,16 @@ void LAPSE(string name) {
 	cout << result << endl;
 	struct HuffNode_T* rm_tree = g_lastest_customer;
 	g_lastest_customer = heap_for_huffman;
+	// Clean previous Huffman tree
 	if (rm_tree != NULL) removeTree(rm_tree);
-	
+	// Clean encode result
+	tmp = huff_result;
+	while (tmp != NULL) {
+		huff_result = tmp->next;
+		delete tmp->encode.data;
+		delete tmp;
+		tmp = huff_result;
+	}
 }
 
 void KOKUSEN() {

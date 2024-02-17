@@ -4,9 +4,7 @@
 int main(int argc, char* argv[]) {
     // string fileName = "test.txt";
     // simulate(fileName);
-    LAPSE("MzfFKMtOWhSQdnoFiISUtIUglRNvBLUpOPVibNieOHFO");
-    HAND();
     LAPSE("piBdoktutmigrdcjavfuusjaqxzsltxjqyjgssalloqOeeayyypjehvpzpzfnudfbidhsm");
-    HAND();
+    removeTree(g_lastest_customer);
     return 0;
 }
