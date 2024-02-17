@@ -301,6 +301,7 @@ struct fifo_node {
 };
 struct area_G {
 	int ID;
+	int size;
 	struct customer_seat_G* root;
 	struct {
 		struct fifo_node* head;
@@ -311,6 +312,7 @@ struct area_G* initGojoRestaurant() {
 	struct area_G* ret = (struct area_G*) malloc(sizeof(struct area_G) * MAXSIZE);
 	for (int i = 0; i < MAXSIZE; i++) {
 		ret[i].ID = i + 1;
+		ret[i].size = 0;
 		ret[i].root = NULL;
 		ret[i].fifo_order.head = NULL;
 		ret[i].fifo_order.tail = NULL;
@@ -343,7 +345,50 @@ struct area_G* addCustomertoGojo(struct area_G* restaurant, int result) {
 		restaurant[ID - 1].fifo_order.tail = tmp;
 	}
 	restaurant[ID - 1].root = addBST(restaurant[ID - 1].root, result);
+	restaurant[ID - 1].size += 1;
 	return restaurant;
+}
+void removeTree_G(struct customer_seat_G* root) {
+	if (root->left != NULL) removeTree_G(root->left);
+	if (root->right != NULL) removeTree_G(root->right);
+	delete root;
+}
+struct customer_seat_G* removeNode_G(struct customer_seat_G* root, int value) {
+	if (root == NULL) return NULL;
+	if (value > root->result) root->right = removeNode_G(root->right, value);
+	else if (value < root->result) root->left = removeNode_G(root->left, value);
+	else {
+		if (root->left == NULL) {
+			struct customer_seat_G* dlt_it = root;
+			root = root->right;
+			delete dlt_it;
+		} else if (root->right == NULL) {
+			struct customer_seat_G* dlt_it = root;
+			root = root->left;
+			delete dlt_it;
+		} else {
+			struct customer_seat_G* dlt_it = root->right;
+			while (dlt_it->left != NULL) {
+				dlt_it = dlt_it->left;
+			}
+			root->result = dlt_it->result;
+			root->right = removeNode_G(root->right, dlt_it->result);
+		}
+	}
+	return root;
+}
+void removeAllCustomer(struct area_G* restaurant) {
+	removeTree_G(restaurant->root);
+	restaurant->root = NULL;
+	restaurant->size = 0;
+	struct fifo_node* tmp = restaurant->fifo_order.head;
+	while (tmp != NULL) {
+		restaurant->fifo_order.head = tmp->next;
+		delete tmp;
+		tmp = restaurant->fifo_order.head;
+	}
+	restaurant->fifo_order.head = NULL;
+	restaurant->fifo_order.tail = NULL;
 }
 /*-------------------------- CODE END: Gojo's Restaurant --------------------------*/
 
@@ -528,7 +573,19 @@ int numOfWays(const struct customer_seat_G* root) {
 	return ret;
 }
 void KOKUSEN() {
-	cout << "KOKUSEN" << endl;
+	for (int i = 0; i < MAXSIZE; i++) {
+		int Y = numOfWays(g_Gojo_restaurant[i].root);
+		if (Y >= g_Gojo_restaurant[i].size) removeAllCustomer(g_Gojo_restaurant + i);
+		else {
+			for (int j = 0; j < Y; j++) {
+				g_Gojo_restaurant[i].root = removeNode_G(g_Gojo_restaurant[i].root, g_Gojo_restaurant[i].fifo_order.head->result);
+				g_Gojo_restaurant[i].size--;
+				fifo_node* dlt_it = g_Gojo_restaurant[i].fifo_order.head;
+				g_Gojo_restaurant[i].fifo_order.head = dlt_it->next;
+				delete dlt_it;
+			}
+		}
+	}
 }
 
 void KEITEIKEN(int num) {
