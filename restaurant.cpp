@@ -1,6 +1,11 @@
 #include "main.h"
 
+/*--------------------- DECLEARATION BEGIN: Global structures ---------------------*/
 int MAXSIZE;
+struct HuffNode_T* g_lastest_customer = NULL;
+struct area_G* g_Gojo_restaurant = NULL;
+struct min_heap_S* g_Sukuna_restaurant = NULL;
+/*--------------------- DECLEARATION END: Global structures ---------------------*/
 
 /*------------ CODE BEGIN: Support functions for Building Huffman tree ------------*/
 struct HuffNode_T {
@@ -487,9 +492,6 @@ struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result
 	return restaurant;
 }
 /*------------------------ CODE END: Sukuna's restaurant ------------------------*/
-struct HuffNode_T* g_lastest_customer = NULL;
-struct area_G* g_Gojo_restaurant = NULL;
-struct min_heap_S* g_Sukuna_restaurant = NULL;
 int LAPSE(string name) {
 	if (name.length() < 3) return -1;
 	name = applyCaesarCipher(name);
@@ -674,5 +676,19 @@ void simulate(string filename) {
 			CLEAVE(stoi(num));
 		}
 	}
+	// Clean all global structures
+	removeTree(g_lastest_customer);
+	for (int i = 0; i < MAXSIZE; i++) removeAllCustomer(g_Gojo_restaurant + i);
+	delete g_Gojo_restaurant;
+	for (int i = 0; i < MAXSIZE; i++) {
+		lifo_node* tmp = g_Sukuna_restaurant->heap_root[i].lifo_order.head;
+		while (tmp != NULL) {
+			g_Sukuna_restaurant->heap_root[i].lifo_order.head = tmp->next;
+			delete tmp;
+			tmp = g_Sukuna_restaurant->heap_root[i].lifo_order.head;
+		}
+	}
+	delete g_Sukuna_restaurant->heap_root;
+	delete g_Sukuna_restaurant;
 	return;
 }
