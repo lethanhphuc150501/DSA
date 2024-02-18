@@ -624,9 +624,16 @@ void printTreeInOrder(struct HuffNode_T* root) {
 void HAND() {
 	printTreeInOrder(g_lastest_customer);
 }
-
+void printBST(struct customer_seat_G* root) {
+	if (root == NULL) return;
+	printBST(root->left);
+	cout << root->result << endl;
+	printBST(root->right);
+}
 void LIMITLESS(int num) {
-	cout << "LIMITLESS " << num << endl;
+	if (num <= 0 || num > MAXSIZE) return;
+	if (g_Gojo_restaurant[num - 1].size == 0) return;
+	printBST(g_Gojo_restaurant[num - 1].root);
 }
 
 void CLEAVE(int num) {
