@@ -635,9 +635,18 @@ void LIMITLESS(int num) {
 	if (g_Gojo_restaurant[num - 1].size == 0) return;
 	printBST(g_Gojo_restaurant[num - 1].root);
 }
-
+void printSukuna(int num, int idx) {
+	if (idx >= g_Sukuna_restaurant->size) return;
+	struct lifo_node* tmp = g_Sukuna_restaurant->heap_root[idx].lifo_order.head;
+	for (int i = 0; i < num && tmp != NULL; i++) {
+		cout << g_Sukuna_restaurant->heap_root[idx].label << "-" << tmp->result << endl;
+		tmp = tmp->next;
+	}
+	printSukuna(num, 2 * idx + 1);
+	printSukuna(num, 2 * idx + 2);
+}
 void CLEAVE(int num) {
-	cout << "CLEAVE " << num << endl;
+	printSukuna(num, 0);
 }
 
 void simulate(string filename) {
