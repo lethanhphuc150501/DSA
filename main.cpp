@@ -4,10 +4,11 @@
 int main(int argc, char* argv[]) {
     // string fileName = "test.txt";
     // simulate(fileName);
-    MAXSIZE = 5;
-    struct min_heap_S* Sukana_restaurant = initSukunaRestaurant();
+    MAXSIZE = 7;
+    g_Sukuna_restaurant = initSukunaRestaurant();
     for (int i = 0; i < 20; i++) {
-        Sukana_restaurant = addCustomertoSukuna(Sukana_restaurant, i);
+        g_Sukuna_restaurant = addCustomertoSukuna(g_Sukuna_restaurant, i);
     }
+    KEITEIKEN(2);   // 3 cases: NUM = 1, 2, 3
     return 0;
 }

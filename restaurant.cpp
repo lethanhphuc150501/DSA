@@ -593,7 +593,26 @@ void KOKUSEN() {
 }
 
 void KEITEIKEN(int num) {
-	cout << "KEITEIKEN " << num << endl;
+	if (g_Sukuna_restaurant->size == 0) return;
+	if (num >= g_Sukuna_restaurant->heap_root[0].size) num = g_Sukuna_restaurant->heap_root[0].size;
+	for (int i = 0; i < num; i++) {
+		struct lifo_node* dlt_it = g_Sukuna_restaurant->heap_root[0].lifo_order.tail;
+		g_Sukuna_restaurant->heap_root[0].lifo_order.tail = dlt_it->prev;
+		if (g_Sukuna_restaurant->heap_root[0].lifo_order.tail != NULL)
+			g_Sukuna_restaurant->heap_root[0].lifo_order.tail->next = NULL;
+		else
+			g_Sukuna_restaurant->heap_root[0].lifo_order.head = NULL;
+		cout << dlt_it->result << "-" << g_Sukuna_restaurant->heap_root[0].label << endl;
+		delete dlt_it;
+		updateAreaInfo(false, g_Sukuna_restaurant->heap_root);
+	}
+	if (g_Sukuna_restaurant->heap_root[0].size == 0) {
+		g_Sukuna_restaurant->size -= 1;
+		struct area_S tmp = g_Sukuna_restaurant->heap_root[0];
+		g_Sukuna_restaurant->heap_root[0] = g_Sukuna_restaurant->heap_root[g_Sukuna_restaurant->size];
+		g_Sukuna_restaurant->heap_root[g_Sukuna_restaurant->size] = tmp;
+		g_Sukuna_restaurant = reheapDown_S(g_Sukuna_restaurant, 0, g_Sukuna_restaurant->size - 1);
+	}
 }
 void printTreeInOrder(struct HuffNode_T* root) {
 	if (root == NULL) return;
