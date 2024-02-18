@@ -230,12 +230,9 @@ void buildHuff(struct HuffNode_T** tree_heap_addr, int heap_size) {
 	*tree_heap_addr = tree_heap;
 }
 void removeTree(struct HuffNode_T* root) {
-	if (root->left != NULL) {
-		removeTree(root->left);
-	}
-	if (root->right != NULL) {
-		removeTree(root->right);
-	}
+	if (root == NULL) return;
+	removeTree(root->left);
+	removeTree(root->right);
 	delete root;
 }
 struct encodeChar_T {
