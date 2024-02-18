@@ -349,8 +349,9 @@ struct area_G* addCustomertoGojo(struct area_G* restaurant, int result) {
 	return restaurant;
 }
 void removeTree_G(struct customer_seat_G* root) {
-	if (root->left != NULL) removeTree_G(root->left);
-	if (root->right != NULL) removeTree_G(root->right);
+	if (root == NULL) return;
+	removeTree_G(root->left);
+	removeTree_G(root->right);
 	delete root;
 }
 struct customer_seat_G* removeNode_G(struct customer_seat_G* root, int value) {
@@ -492,8 +493,8 @@ struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result
 struct HuffNode_T* g_lastest_customer = NULL;
 struct area_G* g_Gojo_restaurant = NULL;
 struct min_heap_S* g_Sukuna_restaurant = NULL;
-void LAPSE(string name) {
-	if (name.length() < 3) return;
+int LAPSE(string name) {
+	if (name.length() < 3) return -1;
 	name = applyCaesarCipher(name);
 	struct HuffNode_T* heap_for_huffman = NULL;	// Remind for cleaning up heap after finishing LAPSE
 	int heap_size = countFreqOfLetter(name, &heap_for_huffman);
@@ -518,17 +519,16 @@ void LAPSE(string name) {
 		if (encode_slot <= 0) break;
 	}
 	result = convertStringBinary(encode_name_reverse, strlen(encode_name_reverse));
-	cout << result << endl;
 	if (result % 2 == 1) {
 		if (g_Gojo_restaurant == NULL) {
 			cout << "Error: Gojo restaurant has not been initialized" << endl;
-			return;
+			return -1;
 		}
 		g_Gojo_restaurant = addCustomertoGojo(g_Gojo_restaurant, result);
 	} else {
 		if (g_Sukuna_restaurant == NULL) {
 			cout << "Error: Sukuna restaurant has not been initialized" << endl;
-			return;
+			return -1;
 		}
 		g_Sukuna_restaurant = addCustomertoSukuna(g_Sukuna_restaurant, result);
 	}
@@ -544,6 +544,7 @@ void LAPSE(string name) {
 		delete tmp;
 		tmp = huff_result;
 	}
+	return result;
 }
 int sizeOfBST(const struct customer_seat_G* root) {
 	if (root == NULL) return 0;
@@ -660,7 +661,7 @@ void simulate(string filename) {
 			g_Sukuna_restaurant = initSukunaRestaurant();
 		} else if (str == "LAPSE") {
 			ss >> name;
-			LAPSE(name);
+			cout << "LAPSE " << LAPSE(name) << endl;
 		} else if (str == "KOKUSEN") {
 			KOKUSEN();
 		} else if (str == "KEITEIKEN") {
