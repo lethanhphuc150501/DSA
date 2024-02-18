@@ -396,6 +396,7 @@ void removeAllCustomer(struct area_G* restaurant) {
 struct lifo_node {
 	int result;
 	struct lifo_node* next;
+	struct lifo_node* prev;
 };
 struct area_S {
 	struct {
@@ -436,7 +437,7 @@ struct min_heap_S* reheapUp_S(struct min_heap_S* restaurant, int pos) {
 		int parent = (pos - 1) / 2;
 		if (restaurant->heap_root[pos].size < restaurant->heap_root[parent].size ||
 			(restaurant->heap_root[pos].size == restaurant->heap_root[parent].size && restaurant->heap_root[pos].last_modified < restaurant->heap_root[parent].last_modified)) {
-			struct area_S tmp_data = restaurant ->heap_root[parent];
+			struct area_S tmp_data = restaurant->heap_root[parent];
 			restaurant->heap_root[parent] = restaurant->heap_root[pos];
 			restaurant->heap_root[pos] = tmp_data;
 			restaurant = reheapUp_S(restaurant, parent);
@@ -474,10 +475,13 @@ struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result
 	new_customer->result = result;
 	if (restaurant->heap_root[area_idx].lifo_order.head == NULL) {
 		new_customer->next = NULL;
+		new_customer->prev = NULL;
 		restaurant->heap_root[area_idx].lifo_order.head = new_customer;
 		restaurant->heap_root[area_idx].lifo_order.tail = new_customer;
 	} else {
 		new_customer->next = restaurant->heap_root[area_idx].lifo_order.head;
+		new_customer->prev = NULL;
+		restaurant->heap_root[area_idx].lifo_order.head->prev = new_customer;
 		restaurant->heap_root[area_idx].lifo_order.head = new_customer;
 	}
 	updateAreaInfo(true, restaurant->heap_root + area_idx);
