@@ -473,22 +473,27 @@ struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result
 	for (area_idx = 0; area_idx < MAXSIZE; area_idx++) {
 		if (ID == restaurant->heap_root[area_idx].label) break;
 	}
-	if (restaurant->heap_root[area_idx].size == 0) restaurant->size++;
 	struct lifo_node* new_customer = (struct lifo_node*) malloc(sizeof(struct lifo_node));
 	new_customer->result = result;
-	if (restaurant->heap_root[area_idx].lifo_order.head == NULL) {
+	if (restaurant->heap_root[area_idx].size == 0) {
 		new_customer->next = NULL;
 		new_customer->prev = NULL;
 		restaurant->heap_root[area_idx].lifo_order.head = new_customer;
 		restaurant->heap_root[area_idx].lifo_order.tail = new_customer;
+		updateAreaInfo(true, restaurant->heap_root + area_idx);
+		struct area_S tmp = restaurant->heap_root[area_idx];
+		restaurant->heap_root[area_idx] = restaurant->heap_root[restaurant->size];
+		restaurant->heap_root[restaurant->size] = tmp;
+		restaurant = reheapUp_S(restaurant, restaurant->size);
+		restaurant->size++;
 	} else {
 		new_customer->next = restaurant->heap_root[area_idx].lifo_order.head;
 		new_customer->prev = NULL;
 		restaurant->heap_root[area_idx].lifo_order.head->prev = new_customer;
 		restaurant->heap_root[area_idx].lifo_order.head = new_customer;
+		updateAreaInfo(true, restaurant->heap_root + area_idx);
+		restaurant = reheapDown_S(restaurant, area_idx, restaurant->size - 1);
 	}
-	updateAreaInfo(true, restaurant->heap_root + area_idx);
-	restaurant = reheapDown_S(restaurant, area_idx, restaurant->size - 1);
 	return restaurant;
 }
 /*------------------------ CODE END: Sukuna's restaurant ------------------------*/
