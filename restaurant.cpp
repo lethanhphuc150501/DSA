@@ -560,7 +560,7 @@ int dfs(const struct customer_seat_G* root, int** pascal_triangle) {
 }
 int numOfWays(const struct customer_seat_G* root) {
 	int num_of_children = sizeOfBST(root);
-	if (num_of_children <= 1) return 0;
+	if (num_of_children <= 1) return num_of_children % MAXSIZE;
 	int** table = (int**) malloc(sizeof(int*) * num_of_children);
 	for (int i = 0; i < num_of_children; i++) {
 		table[i] = (int*) malloc(sizeof(int) * (i + 1));
