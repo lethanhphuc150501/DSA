@@ -153,7 +153,7 @@ struct HuffNode_T* rightBalance(struct HuffNode_T* root) {
 	struct HuffNode_T* rightTree = root->right;
 	// Case 3: Left of right
 	if (heightOfTree(rightTree->left) > heightOfTree(rightTree->right)) {
-		root->right = rotateLeft(rightTree);
+		root->right = rotateRight(rightTree);
 		root = rotateLeft(root);
 	} else	// Case 4: Right of right
 		root = rotateLeft(root);
@@ -249,6 +249,7 @@ struct encodeChar_T {
 	struct encodeChar_T* next;
 };
 struct encodeChar_T* encodeCharacter(struct HuffNode_T* root, int tmp) {
+	if (root == NULL) return NULL;
 	struct encodeChar_T* ret = NULL;
 	if (isUpperCase(root->letter) || isLowerCase(root->letter)) {
 		ret = (struct encodeChar_T*) malloc(sizeof(struct encodeChar_T));
@@ -258,9 +259,13 @@ struct encodeChar_T* encodeCharacter(struct HuffNode_T* root, int tmp) {
 	} else {
 		struct encodeChar_T* left = encodeCharacter(root->left, tmp * 2);
 		struct encodeChar_T* right = encodeCharacter(root->right, tmp * 2 + 1);
-		ret = left;
-		while (left->next != NULL) left = left->next;
-		left->next = right;
+		if (left != NULL) {
+			ret = left;
+			while (left->next != NULL) left = left->next;
+			left->next = right;
+		} else if (right != NULL) {
+			ret = right;
+		}
 	}
 	return ret;
 }
