@@ -288,7 +288,7 @@ char* convertRawData(int raw) {
 int convertStringBinary(char str_bin[], int str_len) {
 	int mul = 1;
 	int ret = 0;
-	for (int i = 0; i < str_len; i++) {
+	for (int i = 10 - str_len; i < 10; i++) {
 		if (str_bin[i] == '1') ret += mul;
 		mul = mul * 2;
 	}
@@ -527,7 +527,11 @@ int LAPSE(string name) {
 		}
 		if (encode_slot <= 0) break;
 	}
-	result = convertStringBinary(encode_name_reverse, strlen(encode_name_reverse));
+	int remain = 0;
+	for (remain = 0; remain < 10; remain++) {
+		if (encode_name_reverse[remain] == '0' || encode_name_reverse[remain] == '1') break;
+	}
+	result = convertStringBinary(encode_name_reverse, 10 - remain);
 	if (result % 2 == 1) {
 		if (g_Gojo_restaurant == NULL) {
 			cout << "Error: Gojo restaurant has not been initialized" << endl;
@@ -688,7 +692,7 @@ void simulate(string filename) {
 			g_lastest_customer = NULL;
 		} else if (str == "LAPSE") {
 			ss >> name;
-			cout << "LAPSE " << LAPSE(name) << endl;
+			LAPSE(name);
 		} else if (str == "KOKUSEN") {
 			KOKUSEN();
 		} else if (str == "KEITEIKEN") {
