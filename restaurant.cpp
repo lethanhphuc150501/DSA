@@ -685,6 +685,7 @@ void simulate(string filename) {
 			MAXSIZE = stoi(maxsize);
 			g_Gojo_restaurant = initGojoRestaurant();
 			g_Sukuna_restaurant = initSukunaRestaurant();
+			g_lastest_customer = NULL;
 		} else if (str == "LAPSE") {
 			ss >> name;
 			cout << "LAPSE " << LAPSE(name) << endl;
