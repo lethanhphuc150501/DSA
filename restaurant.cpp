@@ -435,37 +435,37 @@ int updateAreaInfo(bool add_ops, struct area_S* area) {
 	area->last_modified = modified;
 	return area->size;
 }
-struct min_heap_S* reheapUp_S(struct min_heap_S* restaurant, int pos) {
+struct area_S* reheapUp_S(struct area_S* heap_root, int pos) {
 	if (pos > 0) {
 		int parent = (pos - 1) / 2;
-		if (restaurant->heap_root[pos].size < restaurant->heap_root[parent].size ||
-			(restaurant->heap_root[pos].size == restaurant->heap_root[parent].size && restaurant->heap_root[pos].last_modified < restaurant->heap_root[parent].last_modified)) {
-			struct area_S tmp_data = restaurant->heap_root[parent];
-			restaurant->heap_root[parent] = restaurant->heap_root[pos];
-			restaurant->heap_root[pos] = tmp_data;
-			restaurant = reheapUp_S(restaurant, parent);
+		if (heap_root[pos].size < heap_root[parent].size ||
+			(heap_root[pos].size == heap_root[parent].size && heap_root[pos].last_modified < heap_root[parent].last_modified)) {
+			struct area_S tmp_data = heap_root[parent];
+			heap_root[parent] = heap_root[pos];
+			heap_root[pos] = tmp_data;
+			heap_root = reheapUp_S(heap_root, parent);
 		}
 	}
-	return restaurant;
+	return heap_root;
 }
-struct min_heap_S* reheapDown_S(struct min_heap_S* restaurant, int pos, int last_pos) {
+struct area_S* reheapDown_S(struct area_S* heap_root, int pos, int last_pos) {
 	int left = pos * 2 + 1;
 	int right = pos * 2 + 2;
 	if (left <= last_pos) {
 		int smaller = left;
-		if (right <= last_pos && (restaurant->heap_root[right].size < restaurant->heap_root[left].size ||
-			(restaurant->heap_root[right].size == restaurant->heap_root[left].size && restaurant->heap_root[right].last_modified < restaurant->heap_root[left].last_modified))) {
+		if (right <= last_pos && (heap_root[right].size < heap_root[left].size ||
+			(heap_root[right].size == heap_root[left].size && heap_root[right].last_modified < heap_root[left].last_modified))) {
 			smaller = right;
 		}
-		if (restaurant->heap_root[smaller].size < restaurant->heap_root[pos].size ||
-			(restaurant->heap_root[smaller].size == restaurant->heap_root[pos].size && restaurant->heap_root[smaller].last_modified < restaurant->heap_root[pos].last_modified)) {
-			struct area_S tmp_data = restaurant->heap_root[smaller];
-			restaurant->heap_root[smaller] = restaurant->heap_root[pos];
-			restaurant->heap_root[pos] = tmp_data;
-			restaurant = reheapDown_S(restaurant, smaller, last_pos);
+		if (heap_root[smaller].size < heap_root[pos].size ||
+			(heap_root[smaller].size == heap_root[pos].size && heap_root[smaller].last_modified < heap_root[pos].last_modified)) {
+			struct area_S tmp_data = heap_root[smaller];
+			heap_root[smaller] = heap_root[pos];
+			heap_root[pos] = tmp_data;
+			heap_root = reheapDown_S(heap_root, smaller, last_pos);
 		}
 	}
-	return restaurant;
+	return heap_root;
 }
 struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result) {
 	int ID = result % MAXSIZE + 1;
@@ -484,7 +484,7 @@ struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result
 		struct area_S tmp = restaurant->heap_root[area_idx];
 		restaurant->heap_root[area_idx] = restaurant->heap_root[restaurant->size];
 		restaurant->heap_root[restaurant->size] = tmp;
-		restaurant = reheapUp_S(restaurant, restaurant->size);
+		restaurant->heap_root = reheapUp_S(restaurant->heap_root, restaurant->size);
 		restaurant->size++;
 	} else {
 		new_customer->next = restaurant->heap_root[area_idx].lifo_order.head;
@@ -492,7 +492,7 @@ struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result
 		restaurant->heap_root[area_idx].lifo_order.head->prev = new_customer;
 		restaurant->heap_root[area_idx].lifo_order.head = new_customer;
 		updateAreaInfo(true, restaurant->heap_root + area_idx);
-		restaurant = reheapDown_S(restaurant, area_idx, restaurant->size - 1);
+		restaurant->heap_root = reheapDown_S(restaurant->heap_root, area_idx, restaurant->size - 1);
 	}
 	return restaurant;
 }
@@ -599,25 +599,42 @@ void KOKUSEN() {
 
 void KEITEIKEN(int num) {
 	if (g_Sukuna_restaurant->size == 0) return;
-	if (num >= g_Sukuna_restaurant->heap_root[0].size) num = g_Sukuna_restaurant->heap_root[0].size;
+	struct area_S* heap_copy = (struct area_S*) malloc(sizeof(struct area_S) * g_Sukuna_restaurant->size);
+	int size_copy = g_Sukuna_restaurant->size;
+	memcpy(heap_copy, g_Sukuna_restaurant->heap_root, sizeof(struct area_S) * g_Sukuna_restaurant->size);
 	for (int i = 0; i < num; i++) {
-		struct lifo_node* dlt_it = g_Sukuna_restaurant->heap_root[0].lifo_order.tail;
-		g_Sukuna_restaurant->heap_root[0].lifo_order.tail = dlt_it->prev;
-		if (g_Sukuna_restaurant->heap_root[0].lifo_order.tail != NULL)
-			g_Sukuna_restaurant->heap_root[0].lifo_order.tail->next = NULL;
-		else
-			g_Sukuna_restaurant->heap_root[0].lifo_order.head = NULL;
-		cout << dlt_it->result << "-" << g_Sukuna_restaurant->heap_root[0].label << endl;
-		delete dlt_it;
-		updateAreaInfo(false, g_Sukuna_restaurant->heap_root);
+		int k = 0;
+		for (k = 0; k < g_Sukuna_restaurant->size; k++) {
+			if (g_Sukuna_restaurant->heap_root[k].label == heap_copy[0].label) break;
+		}
+		int num_of_rm_it = num;
+		if (num_of_rm_it >= g_Sukuna_restaurant->heap_root[k].size) num_of_rm_it = g_Sukuna_restaurant->heap_root[k].size;
+		for (int j = 0; j < num_of_rm_it; j++) {
+			struct lifo_node* dlt_it = g_Sukuna_restaurant->heap_root[k].lifo_order.tail;
+			g_Sukuna_restaurant->heap_root[k].lifo_order.tail = dlt_it->prev;
+			if (g_Sukuna_restaurant->heap_root[k].lifo_order.tail != NULL)
+				g_Sukuna_restaurant->heap_root[k].lifo_order.tail->next = NULL;
+			else
+				g_Sukuna_restaurant->heap_root[k].lifo_order.head = NULL;
+			cout << dlt_it->result << "-" << g_Sukuna_restaurant->heap_root[k].label << endl;
+			delete dlt_it;
+			updateAreaInfo(false, g_Sukuna_restaurant->heap_root + k);
+		}
+		if (g_Sukuna_restaurant->heap_root[k].size == 0) {
+			g_Sukuna_restaurant->size -= 1;
+			struct area_S tmp = g_Sukuna_restaurant->heap_root[k];
+			g_Sukuna_restaurant->heap_root[k] = g_Sukuna_restaurant->heap_root[g_Sukuna_restaurant->size];
+			g_Sukuna_restaurant->heap_root[g_Sukuna_restaurant->size] = tmp;
+			g_Sukuna_restaurant->heap_root = reheapDown_S(g_Sukuna_restaurant->heap_root, k, g_Sukuna_restaurant->size - 1);
+		}
+		size_copy--;
+		if (size_copy == 0) break;
+		struct area_S tmp = heap_copy[0];
+		heap_copy[0] = heap_copy[size_copy];
+		heap_copy[size_copy] = tmp;
+		heap_copy = reheapDown_S(heap_copy, 0, size_copy - 1);
 	}
-	if (g_Sukuna_restaurant->heap_root[0].size == 0) {
-		g_Sukuna_restaurant->size -= 1;
-		struct area_S tmp = g_Sukuna_restaurant->heap_root[0];
-		g_Sukuna_restaurant->heap_root[0] = g_Sukuna_restaurant->heap_root[g_Sukuna_restaurant->size];
-		g_Sukuna_restaurant->heap_root[g_Sukuna_restaurant->size] = tmp;
-		g_Sukuna_restaurant = reheapDown_S(g_Sukuna_restaurant, 0, g_Sukuna_restaurant->size - 1);
-	}
+	delete heap_copy;
 }
 void printTreeInOrder(struct HuffNode_T* root) {
 	if (root == NULL) return;
