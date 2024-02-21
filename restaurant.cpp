@@ -49,6 +49,10 @@ string applyCaesarCipher(string name) {
 	/* Count frequency of letters */
 	struct HuffNode_T* char_arr = NULL;
 	int char_arr_size = countFreqOfLetter(name, &char_arr);
+	if (char_arr_size < 3) {
+		delete char_arr;
+		return "###";
+	}
 	/* Apply Caeser cipher */
 	for (int i = 0; i < name.length(); i++) {
 		int j = 0;
@@ -503,8 +507,8 @@ struct min_heap_S* addCustomertoSukuna(struct min_heap_S* restaurant, int result
 }
 /*------------------------ CODE END: Sukuna's restaurant ------------------------*/
 int LAPSE(string name) {
-	if (name.length() < 3) return -1;
 	name = applyCaesarCipher(name);
+	if (name == "###") return -1;
 	struct HuffNode_T* heap_for_huffman = NULL;	// Remind for cleaning up heap after finishing LAPSE
 	int heap_size = countFreqOfLetter(name, &heap_for_huffman);
 	buildHeap(&heap_for_huffman, heap_size);
